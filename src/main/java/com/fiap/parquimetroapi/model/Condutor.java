@@ -12,7 +12,6 @@ public class Condutor {
     private String id;
     private String nome;
     private String endereco;
-    @Email(message = "E-mail inválido")
     private String email;
     private String telefone;
 }
