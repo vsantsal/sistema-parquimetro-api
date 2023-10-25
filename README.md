@@ -30,4 +30,12 @@ As principais funcionalidades disponibilizadas pelo sistema são:
 
 Podemos sintetizá-las no seguinte diagrama de casos de uso:
 
-![Diagrama de Casos de Uso](https://github.com/vsantsal/sistema-parquimetro-api/blob/main/docs/v1-casos-de-uso-sistema.png)
+![Diagrama de Casos de Uso](https://github.com/vsantsal/sistema-parquimetro-api/blob/main/docs/v2-casos-de-uso-sistema.png)
+
+# 📖 Funcionalidades
+
+Abaixo, descrevemos globalmente as funcionalidades implementadas.
+
+## Registrar condutor
+
+# 🗓️ Resumo Desenvolvimento
