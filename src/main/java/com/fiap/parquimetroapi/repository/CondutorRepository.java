@@ -1,4 +1,4 @@
-package com.fiap.parquimetroapi;
+package com.fiap.parquimetroapi.repository;
 
 import com.fiap.parquimetroapi.model.Condutor;
 import org.springframework.data.mongodb.repository.MongoRepository;

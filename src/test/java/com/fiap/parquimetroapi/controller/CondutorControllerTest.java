@@ -1,5 +1,6 @@
 package com.fiap.parquimetroapi.controller;
 
+import com.fiap.parquimetroapi.model.Condutor;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -147,6 +149,46 @@ class CondutorControllerTest {
                         Matchers.is("endereco")))
                 .andExpect(jsonPath("$[0].mensagem",
                         Matchers.is("Endereço é obrigatório")));
+    }
+
+    @DisplayName("Teste de detalhamento de condutor com id válido na API")
+    @Test
+    public void testCenario6() throws Exception {
+        // Arrange
+        Condutor condutor = new Condutor();
+        condutor.setNome("Motorista X");
+        condutor.setEmail("motoristax@gospeed.com");
+        condutor.setEndereco("Avenida Y, n 123");
+        condutor.setTelefone("5599987654321");
+        var condutorSalvo = mongoTemplate.insert(condutor);
+
+        // Act
+        this.mockMvc.perform(
+                get(ENDPOINT + "/" + condutorSalvo.getId()))
+        // Assert
+            .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id",
+                        Matchers.is(condutorSalvo.getId())))
+                .andExpect(jsonPath("$.nome",
+                        Matchers.is(condutorSalvo.getNome())))
+                .andExpect(jsonPath("$.telefone",
+                        Matchers.is(condutorSalvo.getTelefone())))
+                .andExpect(jsonPath("$.email",
+                        Matchers.is(condutorSalvo.getEmail())))
+                .andExpect(jsonPath("$.endereco",
+                        Matchers.is(condutorSalvo.getEndereco())));
+    }
+
+    @DisplayName("Teste de detalhamento de condutor com id inexistente na API")
+    @Test
+    public void testCenario7() throws Exception {
+        // Act
+        this.mockMvc.perform(
+                        get(ENDPOINT + "/abc")
+                )
+
+                // Assert
+                .andExpect(status().isNotFound());
     }
 
 }
