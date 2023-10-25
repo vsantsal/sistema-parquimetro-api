@@ -1,6 +1,6 @@
 package com.fiap.parquimetroapi.service;
 
-import com.fiap.parquimetroapi.CondutorRepository;
+import com.fiap.parquimetroapi.repository.CondutorRepository;
 import com.fiap.parquimetroapi.dto.CondutorDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
