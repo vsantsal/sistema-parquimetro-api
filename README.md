@@ -41,3 +41,4 @@ Abaixo, descrevemos globalmente as funcionalidades implementadas.
 # 🗓️ Resumo Desenvolvimento
 
 * Para os testes, subimos um banco de dados de testes `MongoDB` em vez de recorrer a banco em memória. Para tanto, recorremos à classe [MongoTemplate](https://docs.spring.io/spring-data/mongodb/docs/current/api/org/springframework/data/mongodb/core/MongoTemplate.html);
+* Adicionalmente, para permitir que os testes de integração fossem executados no `Github Actions`, conferimos a documentação disponível em [MongoDB in GitHub Actions](https://github.com/marketplace/actions/mongodb-in-github-actions) de modo a criar o `step` necessário a subir o servidor;
