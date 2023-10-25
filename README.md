@@ -39,3 +39,5 @@ Abaixo, descrevemos globalmente as funcionalidades implementadas.
 ## Registrar condutor
 
 # 🗓️ Resumo Desenvolvimento
+
+* Para os testes, subimos um banco de dados de testes `MongoDB` em vez de recorrer a banco em memória. Para tanto, recorremos à classe [MongoTemplate](https://docs.spring.io/spring-data/mongodb/docs/current/api/org/springframework/data/mongodb/core/MongoTemplate.html);
