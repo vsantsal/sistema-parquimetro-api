@@ -17,6 +17,8 @@ Sistema de parquímetro para atender a demanda de estacionamento crescente de ci
 
 Haja vista o aumento significativo durante alta temporada, de quase 100% da frota de veículos utilizando o sistema, é um importante requisito que a solução seja escalável.
 
+O link no Github é https://github.com/vsantsal/sistema-parquimetro-api.
+
 # 🔬 Escopo
 
 As principais funcionalidades disponibilizadas pelo sistema são:
@@ -40,5 +42,6 @@ Abaixo, descrevemos globalmente as funcionalidades implementadas.
 
 # 🗓️ Resumo Desenvolvimento
 
-* Para os testes, subimos um banco de dados de testes `MongoDB` em vez de recorrer a banco em memória. Para tanto, recorremos à classe [MongoTemplate](https://docs.spring.io/spring-data/mongodb/docs/current/api/org/springframework/data/mongodb/core/MongoTemplate.html);
-* Adicionalmente, para permitir que os testes de integração fossem executados no `Github Actions`, conferimos a documentação disponível em [MongoDB in GitHub Actions](https://github.com/marketplace/actions/mongodb-in-github-actions) de modo a criar o `step` necessário a subir o servidor;
+* Para os testes, subimos um banco de dados de testes `MongoDB` em vez de recorrer a banco em memória. Para tanto, recorremos à classe `MongoTemplate`, conforme documentação em https://docs.spring.io/spring-data/mongodb/docs/current/api/org/springframework/data/mongodb/core/MongoTemplate.html;
+* Para permitir que os testes de integração fossem executados no `Github Actions`, conferimos a documentação disponível em https://github.com/marketplace/actions/mongodb-in-github-actions de modo a criar o `step` necessário a subir o servidor;
+* Em https://docs.github.com/en/actions/learn-github-actions/variables, visualizamos como informar variáveis de ambiente para serem usadas em execuções de testes no `Github Actions`; 
