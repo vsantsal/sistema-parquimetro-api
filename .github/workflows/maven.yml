@@ -38,3 +38,5 @@ jobs:
       run: mvn -B package --file pom.xml
       env:
           HOST: localhost
+          JWT_SECRET: localhost-jwt-secret
+          JWT_ISSUER: localhost-jwt-issuer
