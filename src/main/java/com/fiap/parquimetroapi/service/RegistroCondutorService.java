@@ -26,7 +26,7 @@ public class RegistroCondutorService {
     public CondutorDTO registrar(RegistroCondutorDTO dto){
         // Se usuário já cadastrado, informa erro ao usuário
         if (condutorRepository.findFirstByLogin(dto.condutorDTO().email()).isPresent()){
-            throw new CondutorExistenteException("Usuário já cadastrado");
+            throw new CondutorExistenteException("Condutor já cadastrado");
         }
 
         // Criptografa senha para salvar no BD
