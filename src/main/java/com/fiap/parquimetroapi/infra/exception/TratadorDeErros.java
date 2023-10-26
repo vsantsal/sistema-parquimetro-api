@@ -10,6 +10,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Arrays;
+
 @RestControllerAdvice
 public class TratadorDeErros {
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -43,7 +45,9 @@ public class TratadorDeErros {
 
     private record DadosErrosValidacao(String campo, String mensagem) {
         public DadosErrosValidacao(FieldError erro) {
-            this(erro.getField(), erro.getDefaultMessage());
+
+            this(Arrays.stream(erro.getField().split("[.]")).toList().get(1),
+                    erro.getDefaultMessage());
         }
     }
 
