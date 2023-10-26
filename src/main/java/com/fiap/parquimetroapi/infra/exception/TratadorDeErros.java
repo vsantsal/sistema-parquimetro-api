@@ -3,6 +3,7 @@ package com.fiap.parquimetroapi.infra.exception;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +22,13 @@ public class TratadorDeErros {
     @ExceptionHandler(DataRetrievalFailureException.class)
     public ResponseEntity tratarErroDevolvendo400(DataRetrievalFailureException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                new ErroSoComMensagemValidacao(exception.getMessage())
+        );
+    }
+
+    @ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
+    public ResponseEntity tratarErroDevolvendo403(AuthenticationCredentialsNotFoundException exception) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
                 new ErroSoComMensagemValidacao(exception.getMessage())
         );
     }
