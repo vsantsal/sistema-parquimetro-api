@@ -9,6 +9,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fiap.parquimetroapi.dto.CondutorDTO;
 import com.fiap.parquimetroapi.service.CondutorService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/condutores")
 public class CondutorController {

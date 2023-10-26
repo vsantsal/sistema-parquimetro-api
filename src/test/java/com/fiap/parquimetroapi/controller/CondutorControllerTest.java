@@ -1,6 +1,8 @@
 package com.fiap.parquimetroapi.controller;
 
+import com.fiap.parquimetroapi.dto.CondutorDTO;
 import com.fiap.parquimetroapi.model.Condutor;
+import com.fiap.parquimetroapi.model.Usuario;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -20,6 +23,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class CondutorControllerTest {
 
+    private Condutor condutor;
+
     private final String ENDPOINT = "/condutores";
 
     @Autowired
@@ -28,47 +33,58 @@ class CondutorControllerTest {
     @Autowired
     MongoTemplate mongoTemplate;
 
+    @BeforeEach
+    public void  setUp(){
+        condutor = new CondutorDTO(
+                "Fulano",
+                "Endereço do Fulano",
+                "fulano@email.com",
+                "123456789",
+                null
+        ).toModel();
+        condutor.setUsuario(new Usuario("fulano@email.com", "123456"));
+    }
+
     @AfterEach
     public void tearDownDatabase(){
         mongoTemplate.getDb().drop();
     }
 
-    @DisplayName("Teste de detalhamento de condutor com id válido na API")
-    @WithMockUser(username = "tester")
+    @DisplayName("Teste de detalhamento de condutor identifica infos para o id do próprio usuario")
     @Test
-    public void testCenario6() throws Exception {
+    public void testCenario1() throws Exception {
         // Arrange
-        Condutor condutor = new Condutor();
-        condutor.setNome("Motorista X");
-        condutor.setEmail("motoristax@gospeed.com");
-        condutor.setEndereco("Avenida Y, n 123");
-        condutor.setTelefone("5599987654321");
-        var condutorSalvo = mongoTemplate.insert(condutor);
+        mongoTemplate.insert(condutor);
 
         // Act
         this.mockMvc.perform(
-                get(ENDPOINT + "/" + condutorSalvo.getId()))
+                get(ENDPOINT + "/" + condutor.getId())
+                        .with(user(condutor.getUsuario()))
+                )
         // Assert
             .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id",
-                        Matchers.is(condutorSalvo.getId())))
+                        Matchers.is(condutor.getId())))
                 .andExpect(jsonPath("$.nome",
-                        Matchers.is(condutorSalvo.getNome())))
+                        Matchers.is(condutor.getNome())))
                 .andExpect(jsonPath("$.telefone",
-                        Matchers.is(condutorSalvo.getTelefone())))
+                        Matchers.is(condutor.getTelefone())))
                 .andExpect(jsonPath("$.email",
-                        Matchers.is(condutorSalvo.getEmail())))
+                        Matchers.is(condutor.getEmail())))
                 .andExpect(jsonPath("$.endereco",
-                        Matchers.is(condutorSalvo.getEndereco())));
+                        Matchers.is(condutor.getEndereco())));
     }
 
-    @DisplayName("Teste de detalhamento de condutor com id inexistente na API")
-    @WithMockUser(username = "tester")
+    @DisplayName("Teste de detalhamento de condutor nao visualiza outros ids na api")
     @Test
-    public void testCenario7() throws Exception {
+    public void testCenario2() throws Exception {
+        // Arrange
+        mongoTemplate.insert(condutor);
+
         // Act
         this.mockMvc.perform(
                         get(ENDPOINT + "/abc")
+                                .with(user(condutor.getUsuario()))
                 )
 
                 // Assert

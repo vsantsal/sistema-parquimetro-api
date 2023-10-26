@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
+
 @Service
 public class CondutorService {
 
@@ -13,13 +16,13 @@ public class CondutorService {
     private CondutorRepository condutorRepository;
 
     public CondutorDTO detalhar(String id) {
-        var condutor = this.condutorRepository
-                .findById(id)
-                .orElseThrow(
-                        () -> new DataRetrievalFailureException(
-                                "Condutor de id '" + id + "' não encontrado"
-                        )
-                );
-        return new CondutorDTO(condutor);
+        var usuarioLogado = RegistroCondutorService.getUsuarioLogado();
+        var condutorDeUsuario = this.condutorRepository.findFirstByLogin(usuarioLogado.getLogin());
+        if (condutorDeUsuario.isEmpty() ||
+                !Objects.equals(condutorDeUsuario.get().getId(), id)){
+            throw new DataRetrievalFailureException("Recurso inválido");
+        }
+        return new CondutorDTO(condutorDeUsuario.get());
     }
+
 }

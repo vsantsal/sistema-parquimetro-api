@@ -8,6 +8,7 @@ import com.fiap.parquimetroapi.exception.CondutorExistenteException;
 import com.fiap.parquimetroapi.repository.CondutorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -58,5 +59,8 @@ public class RegistroCondutorService {
                 .orElse(false);
     }
 
+    public static Usuario getUsuarioLogado(){
+        return (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
 
 }
