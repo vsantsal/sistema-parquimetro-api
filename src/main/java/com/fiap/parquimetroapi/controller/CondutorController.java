@@ -33,4 +33,13 @@ public class CondutorController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<CondutorDTO> atualizar(
+            @PathVariable String id,
+            @RequestBody @Valid CondutorDTO dto
+    ){
+        var dtoResposta = this.condutorService.atualizar(id, dto);
+        return ResponseEntity.ok(dtoResposta);
+    }
+
 }

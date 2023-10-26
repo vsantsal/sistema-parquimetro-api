@@ -31,6 +31,16 @@ public class CondutorService {
         condutorRepository.save(condutorDeUsuario);
     }
 
+    public CondutorDTO atualizar(String id, CondutorDTO dto) {
+        var condutorDeUsuario = validaUsuarioLogadoERetorna(id);
+        condutorDeUsuario.setNome(dto.nome());
+        condutorDeUsuario.setEndereco(dto.endereco());
+        condutorDeUsuario.setTelefone(dto.telefone());
+        condutorRepository.save(condutorDeUsuario);
+        return new CondutorDTO(condutorDeUsuario);
+
+    }
+
     private Condutor validaUsuarioLogadoERetorna(String id){
         var usuarioLogado = RegistroCondutorService.getUsuarioLogado();
         var condutorDeUsuario = this.condutorRepository.findFirstByLogin(usuarioLogado.getLogin());
@@ -40,4 +50,5 @@ public class CondutorService {
         }
         return condutorDeUsuario.get();
     }
+
 }
