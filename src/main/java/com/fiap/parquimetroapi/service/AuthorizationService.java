@@ -1,6 +1,6 @@
 package com.fiap.parquimetroapi.service;
 
-import com.fiap.parquimetroapi.repository.CondutorException;
+import com.fiap.parquimetroapi.exception.CondutorExistenteException;
 import com.fiap.parquimetroapi.repository.CondutorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +18,7 @@ public class AuthorizationService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var condutor = repository.findFirstByLogin(username);
         return condutor
-                .orElseThrow(() -> new CondutorException("Não há condutor com o login informado"))
+                .orElseThrow(() -> new CondutorExistenteException("Não há condutor com o login informado"))
                 .getUsuario();
     }
 }

@@ -2,14 +2,12 @@ package com.fiap.parquimetroapi.service;
 
 import com.fiap.parquimetroapi.dto.CondutorDTO;
 import com.fiap.parquimetroapi.dto.RegistroCondutorDTO;
-import com.fiap.parquimetroapi.infra.security.SecurityConfiguration;
 import com.fiap.parquimetroapi.model.Condutor;
 import com.fiap.parquimetroapi.model.Usuario;
-import com.fiap.parquimetroapi.repository.CondutorException;
+import com.fiap.parquimetroapi.exception.CondutorExistenteException;
 import com.fiap.parquimetroapi.repository.CondutorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +26,7 @@ public class RegistroCondutorService {
     public CondutorDTO registrar(RegistroCondutorDTO dto){
         // Se usuário já cadastrado, informa erro ao usuário
         if (condutorRepository.findFirstByLogin(dto.condutorDTO().email()).isPresent()){
-            throw new CondutorException("Usuário já cadastrado");
+            throw new CondutorExistenteException("Usuário já cadastrado");
         }
 
         // Criptografa senha para salvar no BD
