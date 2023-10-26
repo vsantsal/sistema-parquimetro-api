@@ -12,13 +12,6 @@ public class CondutorService {
     @Autowired
     private CondutorRepository condutorRepository;
 
-
-    public CondutorDTO registrar(CondutorDTO dto) {
-        var modelo = dto.toModel();
-        var modeloSalvo = this.condutorRepository.save(modelo);
-        return new CondutorDTO(modeloSalvo);
-    }
-
     public CondutorDTO detalhar(String id) {
         var condutor = this.condutorRepository
                 .findById(id)
