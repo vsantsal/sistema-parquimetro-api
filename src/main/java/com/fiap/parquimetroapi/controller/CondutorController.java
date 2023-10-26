@@ -25,4 +25,12 @@ public class CondutorController {
         return ResponseEntity.ok(dto);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity descadastra(
+            @PathVariable String id
+    ){
+        this.condutorService.descadastra(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

@@ -3,20 +3,23 @@ package com.fiap.parquimetroapi.controller;
 import com.fiap.parquimetroapi.dto.CondutorDTO;
 import com.fiap.parquimetroapi.model.Condutor;
 import com.fiap.parquimetroapi.model.Usuario;
+import com.fiap.parquimetroapi.repository.CondutorRepository;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -32,6 +35,8 @@ class CondutorControllerTest {
 
     @Autowired
     MongoTemplate mongoTemplate;
+    @Autowired
+    private CondutorRepository condutorRepository;
 
     @BeforeEach
     public void  setUp(){
@@ -54,7 +59,7 @@ class CondutorControllerTest {
     @Test
     public void testCenario1() throws Exception {
         // Arrange
-        mongoTemplate.insert(condutor);
+        condutorRepository.save(condutor);
 
         // Act
         this.mockMvc.perform(
@@ -79,7 +84,7 @@ class CondutorControllerTest {
     @Test
     public void testCenario2() throws Exception {
         // Arrange
-        mongoTemplate.insert(condutor);
+        condutorRepository.save(condutor);
 
         // Act
         this.mockMvc.perform(
@@ -89,6 +94,45 @@ class CondutorControllerTest {
 
                 // Assert
                 .andExpect(status().isNotFound());
+    }
+
+    @DisplayName("Exclusão de pessoa retorna status 404 se id não corresponder")
+    @Test
+    public void testCenario3() throws Exception {
+        // Arrange
+        condutorRepository.save(condutor);
+
+        // Act
+        this.mockMvc.perform(
+                        delete(ENDPOINT + "/1000")
+                                .with(user(condutor.getUsuario()))
+                )
+
+                // Assert
+                .andExpect(status().isNotFound());
+    }
+
+    @DisplayName("Exclusão de pessoa retorna status 204 para o id do próprio condutor")
+    @Test
+    public void testCenario4() throws Exception {
+        // Arrange
+        condutorRepository.save(condutor);
+
+        // Act
+        this.mockMvc.perform(
+                        delete(ENDPOINT + "/" + condutor.getId())
+                                .with(user(condutor.getUsuario()))
+                )
+
+                // Assert
+                .andExpect(status().isNoContent());
+
+        var condutorAtualizado = condutorRepository.findById(condutor.getId());
+        assertTrue(condutorAtualizado.isPresent());
+        var usuarioAtualizado = condutorAtualizado.get().getUsuario();
+        assertFalse(usuarioAtualizado.isAtivo());
+        assertNotEquals(usuarioAtualizado.getCriadoEm(), usuarioAtualizado.getAtualizadoEm());
+
     }
 
 }
