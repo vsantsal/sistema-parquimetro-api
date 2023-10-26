@@ -15,19 +15,6 @@ public class CondutorController {
     @Autowired
     private CondutorService condutorService;
 
-    @PostMapping
-    public ResponseEntity<CondutorDTO> registrar(
-            @RequestBody @Valid CondutorDTO dto,
-            UriComponentsBuilder uriComponentsBuilder
-    ){
-        var dtoResposta = this.condutorService.registrar(dto);
-        var uri = uriComponentsBuilder
-                .path("/condutores/{id}")
-                .buildAndExpand(dtoResposta.id())
-                .toUri();
-        return ResponseEntity.created(uri).body(dtoResposta);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<CondutorDTO> detalhar(
             @PathVariable String id
