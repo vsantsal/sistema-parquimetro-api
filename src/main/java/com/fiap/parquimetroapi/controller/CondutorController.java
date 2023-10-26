@@ -9,24 +9,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fiap.parquimetroapi.dto.CondutorDTO;
 import com.fiap.parquimetroapi.service.CondutorService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/condutores")
 public class CondutorController {
     @Autowired
     private CondutorService condutorService;
-
-    @PostMapping
-    public ResponseEntity<CondutorDTO> registrar(
-            @RequestBody @Valid CondutorDTO dto,
-            UriComponentsBuilder uriComponentsBuilder
-    ){
-        var dtoResposta = this.condutorService.registrar(dto);
-        var uri = uriComponentsBuilder
-                .path("/condutores/{id}")
-                .buildAndExpand(dtoResposta.id())
-                .toUri();
-        return ResponseEntity.created(uri).body(dtoResposta);
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<CondutorDTO> detalhar(
@@ -34,6 +23,23 @@ public class CondutorController {
     ){
         var dto = this.condutorService.detalhar(id);
         return ResponseEntity.ok(dto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity descadastra(
+            @PathVariable String id
+    ){
+        this.condutorService.descadastra(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CondutorDTO> atualizar(
+            @PathVariable String id,
+            @RequestBody @Valid CondutorDTO dto
+    ){
+        var dtoResposta = this.condutorService.atualizar(id, dto);
+        return ResponseEntity.ok(dtoResposta);
     }
 
 }

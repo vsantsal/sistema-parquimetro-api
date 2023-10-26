@@ -24,16 +24,19 @@ O link no Github é https://github.com/vsantsal/sistema-parquimetro-api.
 
 As principais funcionalidades disponibilizadas pelo sistema são:
 
-- Registro de condutores e veículos
-- Registro de formas de pagamentos
-- Controle de tempo estacionado
-- Alertas de tempo estacionado
-- Opções de pagamento
-- Emissão de recibos
+- Autenticar Usuário
+- Manter Condutor
+- Manter Veículo
+- Manter Forma de Pagamento
+- Iniciar Período de Estacionamento
+- Controlar Tempo Estacionado
+- Alertar Tempo Estacionado
+- Pagar Estacionamento
+- Emitir Recibo
 
-Podemos sintetizá-las no seguinte diagrama de casos de uso:
+Podemos sintetizar as interações do principal ator do sistema - um condutor - no seguinte diagrama de casos de uso:
 
-![Diagrama de Casos de Uso](https://github.com/vsantsal/sistema-parquimetro-api/blob/main/docs/v2-casos-de-uso-sistema.png)
+![Diagrama de Casos de Uso](https://github.com/vsantsal/sistema-parquimetro-api/blob/main/docs/v3-casos-de-uso-sistema.png)
 
 # 📖 Funcionalidades
 

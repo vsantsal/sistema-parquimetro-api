@@ -1,12 +1,16 @@
 package com.fiap.parquimetroapi.infra.exception;
 
+import com.fiap.parquimetroapi.exception.CondutorExistenteException;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.Arrays;
 
 @RestControllerAdvice
 public class TratadorDeErros {
@@ -25,9 +29,25 @@ public class TratadorDeErros {
         );
     }
 
+    @ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
+    public ResponseEntity tratarErroDevolvendo403(AuthenticationCredentialsNotFoundException exception) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+                new ErroSoComMensagemValidacao(exception.getMessage())
+        );
+    }
+
+    @ExceptionHandler(CondutorExistenteException.class)
+    public ResponseEntity tratarErroDevolvendo409(CondutorExistenteException exception) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                new ErroSoComMensagemValidacao(exception.getMessage())
+        );
+    }
+
     private record DadosErrosValidacao(String campo, String mensagem) {
         public DadosErrosValidacao(FieldError erro) {
-            this(erro.getField(), erro.getDefaultMessage());
+
+            this(Arrays.stream(erro.getField().split("[.]")).toList().get(1),
+                    erro.getDefaultMessage());
         }
     }
 
