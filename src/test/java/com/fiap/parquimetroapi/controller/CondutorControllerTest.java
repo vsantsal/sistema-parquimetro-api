@@ -156,4 +156,36 @@ class CondutorControllerTest {
                 // Assert
                 .andExpect(status().isNotFound());
     }
+
+    @DisplayName("Pode atualizar seus próprios dados")
+    @Test
+    public void testCenario6() throws Exception {
+        // Arrange
+        condutorRepository.save(condutor);
+
+        // Act
+        this.mockMvc.perform(
+                        put(ENDPOINT + "/" + condutor.getId())
+                                .with(user(condutor.getUsuario()))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        "{\"nome\": \"Ciclano\", " +
+                                                "\"email\": \"ciclano@email.com\", " +
+                                                "\"endereco\": \"Endereço de Ciclano\", " +
+                                                "\"telefone\": \"987654321\"}"
+                                ))
+
+                // Assert
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id",
+                        Matchers.is(condutor.getId())))
+                .andExpect(jsonPath("$.nome",
+                        Matchers.is("Ciclano")))
+                .andExpect(jsonPath("$.email",
+                        Matchers.is("ciclano@email.com")))
+                .andExpect(jsonPath("$.endereco",
+                        Matchers.is("Endereço de Ciclano")))
+                .andExpect(jsonPath("$.telefone",
+                        Matchers.is("987654321")));
+    }
 }

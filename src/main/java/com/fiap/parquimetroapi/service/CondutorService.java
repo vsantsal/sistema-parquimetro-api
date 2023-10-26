@@ -36,6 +36,7 @@ public class CondutorService {
         condutorDeUsuario.setNome(dto.nome());
         condutorDeUsuario.setEndereco(dto.endereco());
         condutorDeUsuario.setTelefone(dto.telefone());
+        condutorDeUsuario.setEmail(dto.email());
         condutorRepository.save(condutorDeUsuario);
         return new CondutorDTO(condutorDeUsuario);
 
