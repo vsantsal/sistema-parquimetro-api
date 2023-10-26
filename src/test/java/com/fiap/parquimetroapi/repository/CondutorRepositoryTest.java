@@ -35,7 +35,7 @@ class CondutorRepositoryTest {
                 "123456789",
                 null
         ).toModel();
-        condutor.setUsuario(new Usuario("fulano@email.com", "123456"));
+        condutor.setUsuario(new Usuario("fulano", "123456"));
     }
     @AfterEach
     public void tearDownDatabase(){
@@ -60,7 +60,7 @@ class CondutorRepositoryTest {
         // Arrange
         repository.save(condutor);
         // Act
-        var condutorPesquisado = repository.findFirstByLogin(condutor.getEmail());
+        var condutorPesquisado = repository.findFirstByLogin(condutor.getUsuario().getLogin());
 
         // Assert
         assertTrue(condutorPesquisado.isPresent());
@@ -94,9 +94,9 @@ class CondutorRepositoryTest {
                 "987654321",
                 null
         ).toModel();
-        condutor2.setUsuario(new Usuario("fulano@email.com", "654321"));
+        condutor2.setUsuario(new Usuario("fulano", "654321"));
         // Act
-        var condutorPesquisado = repository.findFirstByLogin("fulano@email.com");
+        var condutorPesquisado = repository.findFirstByLogin("fulano");
 
         // Assert
         assertTrue(condutorPesquisado.isPresent());

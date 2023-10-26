@@ -47,7 +47,7 @@ class CondutorControllerTest {
                 "123456789",
                 null
         ).toModel();
-        condutor.setUsuario(new Usuario("fulano@email.com", "123456"));
+        condutor.setUsuario(new Usuario("fulano", "123456"));
     }
 
     @AfterEach

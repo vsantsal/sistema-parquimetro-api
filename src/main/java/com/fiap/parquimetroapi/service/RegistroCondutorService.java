@@ -26,13 +26,13 @@ public class RegistroCondutorService {
 
     public CondutorDTO registrar(RegistroCondutorDTO dto){
         // Se usuário já cadastrado, informa erro ao usuário
-        if (condutorRepository.findFirstByLogin(dto.condutorDTO().email()).isPresent()){
+        if (condutorRepository.findFirstByLogin(dto.login()).isPresent()){
             throw new CondutorExistenteException("Condutor já cadastrado");
         }
 
         // Criptografa senha para salvar no BD
         String senhaCriptografada = passwordEncoder.encode(dto.senha());
-        Usuario usuario = new Usuario(dto.condutorDTO().email(), senhaCriptografada);
+        Usuario usuario = new Usuario(dto.login(), senhaCriptografada);
         LocalDateTime dataHoraCriacao = LocalDateTime.now();
         usuario.setCriadoEm(dataHoraCriacao);
         usuario.setAtualizadoEm(dataHoraCriacao);

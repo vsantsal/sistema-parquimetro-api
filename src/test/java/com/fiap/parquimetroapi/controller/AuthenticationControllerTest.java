@@ -50,7 +50,7 @@ class AuthenticationControllerTest {
                 "123456789",
                 null
         ).toModel();
-        condutor.setUsuario(new Usuario("fulano@email.com", "123456"));
+        condutor.setUsuario(new Usuario("fulano", "123456"));
     }
     @AfterEach
     public void tearDownDatabase(){
@@ -72,6 +72,7 @@ class AuthenticationControllerTest {
                                                 "\"email\": \"fulano@email.com\", " +
                                                 "\"endereco\": \"Endereço de Ciclano\", " +
                                                 "\"telefone\": \"987654321\"}, " +
+                                                "\"login\": \"fulano\", " +
                                                 "\"senha\": \"123456\"}}"
 
                                 )
@@ -95,6 +96,7 @@ class AuthenticationControllerTest {
                                                 "\"email\": \"ciclano@email.com\", " +
                                                 "\"endereco\": \"Endereço de Ciclano\", " +
                                                 "\"telefone\": \"987654321\"}, " +
+                                                "\"login\": \"ciclano\", " +
                                                 "\"senha\": \"123456\"}}"
 
                                 )
@@ -119,6 +121,7 @@ class AuthenticationControllerTest {
                                                 "\"email\": \"" + email + "\", " +
                                                 "\"endereco\": \"Endereço de Ciclano\", " +
                                                 "\"telefone\": \"987654321\"}, " +
+                                                "\"login\": \"ciclano\", " +
                                                 "\"senha\": \"123456\"}}"
                                 )
                 )
@@ -143,6 +146,7 @@ class AuthenticationControllerTest {
                                                 "{\"nome\": \"Ciclano\", " +
                                                 "\"endereco\": \"Endereço de Ciclano\", " +
                                                 "\"telefone\": \"987654321\"}, " +
+                                                "\"login\": \"ciclano\", " +
                                                 "\"senha\": \"123456\"}}"
                                 )
                 )
@@ -168,6 +172,7 @@ class AuthenticationControllerTest {
                                                 "{\"email\": \"ciclano@email.com\", " +
                                                 "\"endereco\": \"Endereço de Ciclano\", " +
                                                 "\"telefone\": \"987654321\"}, " +
+                                                "\"login\": \"ciclano\", " +
                                                 "\"senha\": \"123456\"}}"                               )
                 )
 
@@ -190,7 +195,8 @@ class AuthenticationControllerTest {
                                         "{\"condutor\":" +
                                                 "{\"nome\": \"Ciclano\", " +
                                                 "\"email\": \"ciclano@email.com\", " +
-                                                "\"endereco\": \"Endereço de Ciclano\", " +
+                                                "\"endereco\": \"Endereço de Ciclano\"}, " +
+                                                "\"login\": \"ciclano\", " +
                                                 "\"senha\": \"123456\"}}"                               )
                 )
 
@@ -214,6 +220,7 @@ class AuthenticationControllerTest {
                                                 "{\"nome\": \"Ciclano\", " +
                                                 "\"email\": \"ciclano@email.com\", " +
                                                 "\"telefone\": \"987654321\"}, " +
+                                                "\"login\": \"ciclano\", " +
                                                 "\"senha\": \"123456\"}}"                               )
                 )
 
