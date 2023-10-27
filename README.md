@@ -38,6 +38,13 @@ Podemos sintetizar as interações do principal ator do sistema - um condutor - 
 
 ![Diagrama de Casos de Uso](https://github.com/vsantsal/sistema-parquimetro-api/blob/main/docs/v3-casos-de-uso-sistema.png)
 
+Não pretendemos sobrecarregar os leitores com uma especificação rígida e pesada dos fluxos principal e alternativos para os casos de usos acima, considerando suficiente para o objetivo do presente trabalho descreveremos as principais interaçoes entre os atores e o sistema. 
+
+**Autenticar Usuario**: um visitante nao logado acessa a API visando ao seu cadastro nela. Ele fornece *login* e *senha*, alem de dados cadastrais necessarios para a aplicaçao identifica-lo como condutor. Caso o *login* ja tenha sido utilizado por outro usuario, o sistema informa a impossibilidade de utiliza-lo novamente.
+
+**Manter Condutor**: um condutor (isto e, um usuario autenticado), pode visualizar seus dados cadastrais na API, alem de atualiza-los ou solicitar inativaçao de sua conta. Nao lhe e permitida a visualizaçao de dados de outros participantes.
+
+
 # 📖 Funcionalidades
 
 Abaixo, descrevemos globalmente as funcionalidades implementadas.
