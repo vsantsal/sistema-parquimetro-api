@@ -140,6 +140,41 @@ Para o DELETE, deve-se passar o id do condutor a remover no endpoint (por exempl
 A aplicação marcará internamente o identificador `ativo` como false do modelo e retornará o STATUS CODE 204. 
 Assim como nos demais verbos, o usuário logado somente poderá inativar seu registro.
 
+## Manter Forma de Pagamento
+
+Nossa API Rest deve suportar a manutenção da forma de pagamento preferida de um condutor
+
+O enpdpoint será baseado em `/pagamentos/forma`, suportando os métodos HTTP GET, PUT, POST.
+
+O GET no endpoint é realizado sem passagem de ID.
+
+A resposta da requisição ocorre como no exemplo abaixo.
+
+```json
+{
+    "tipo": "PIX",
+    "tiposAceitosTempoEstacionado": ["FIXO"]
+}
+```
+
+Caso não possua forma de pagamento preferida registrada ainda, a aplicação lança erro e informa como abaixo.
+
+```json
+{
+  "mensagem": "Forma de pagamento preferida não registrada"
+}
+```
+Para o PUT e para o POST, deve-se passar no corpo da requisição o tipo de forma de pagamento desejado:
+
+```json
+{
+    "tipo": "CARTAO_DE_CREDITO"
+}
+```
+A aplicação fará as atualizações dos campos e retornará o STATUS CODE 200, em caso de sucesso.
+
+Um condutor logado somente poderá atualizar seus próprios dados.
+
 # 🗓️ Resumo Desenvolvimento
 
 * Para os testes, subimos um banco de dados de testes `MongoDB` em vez de recorrer a banco em memória. Para tanto, recorremos à classe `MongoTemplate`, conforme documentação em https://docs.spring.io/spring-data/mongodb/docs/current/api/org/springframework/data/mongodb/core/MongoTemplate.html;
