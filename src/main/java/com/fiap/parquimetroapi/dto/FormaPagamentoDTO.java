@@ -21,6 +21,7 @@ public record FormaPagamentoDTO(
                                 .toList());
         }
 
+
         public FormaPagamento toModel() {
                 try {
                         return FormaPagamento.valueOf(tipo());

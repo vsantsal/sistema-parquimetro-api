@@ -44,19 +44,25 @@ public class CondutorService {
 
     }
 
-    private Condutor validaUsuarioLogadoERetorna(String id){
-        var usuarioLogado = RegistroCondutorService.getUsuarioLogado();
-        var condutorDeUsuario = this.condutorRepository.findFirstByLogin(usuarioLogado.getLogin());
-        if (condutorDeUsuario.isEmpty() ||
-                !Objects.equals(condutorDeUsuario.get().getId(), id)){
-            throw new DataRetrievalFailureException("Recurso inválido");
-        }
-        return condutorDeUsuario.get();
+    public FormaPagamentoDTO registrarFormaPagamento(FormaPagamentoDTO dto) {
+        Condutor condutor = this.obterCondutorLogado();
+        var formaPagamento = dto.toModel();
+
+        condutor.setFormaPagamento(formaPagamento);
+        condutorRepository.save(condutor);
+
+        return  new FormaPagamentoDTO(condutor);
+
+
     }
 
-    public FormaPagamentoDTO registrarFormaPagamento(FormaPagamentoDTO dto) {
+    public FormaPagamentoDTO consultarFormaPagamento() {
+        Condutor condutor = this.obterCondutorLogado();
+        return new FormaPagamentoDTO(condutor);
+    }
+
+    private Condutor obterCondutorLogado(){
         var usuarioLogado = RegistroCondutorService.getUsuarioLogado();
-        var formaPagamento = dto.toModel();
         Optional<Condutor> possivelCondutor = condutorRepository
                 .findFirstByLogin(usuarioLogado.getLogin());
 
@@ -64,12 +70,15 @@ public class CondutorService {
             throw new DataRetrievalFailureException("Recurso invalido");
         }
 
-        Condutor condutor = possivelCondutor.get();
-        condutor.setFormaPagamento(formaPagamento);
-        condutorRepository.save(condutor);
+        return possivelCondutor.get();
 
-        return  new FormaPagamentoDTO(condutor);
+    }
 
-
+    private Condutor validaUsuarioLogadoERetorna(String id){
+        var condutorDeUsuario = this.obterCondutorLogado();
+        if (!Objects.equals(condutorDeUsuario.getId(), id)){
+            throw new DataRetrievalFailureException("Recurso inválido");
+        }
+        return condutorDeUsuario;
     }
 }

@@ -6,10 +6,7 @@ import com.fiap.parquimetroapi.service.CondutorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/pagamentos")
@@ -25,4 +22,11 @@ public class PagamentoController {
         FormaPagamentoDTO dtoSalvo = condutorService.registrarFormaPagamento(dto);
         return ResponseEntity.ok(dtoSalvo);
     }
+
+    @GetMapping("/forma")
+    public ResponseEntity<FormaPagamentoDTO> consultar(){
+        FormaPagamentoDTO dtoSalvo = condutorService.consultarFormaPagamento();
+        return ResponseEntity.ok(dtoSalvo);
+    }
+
 }
