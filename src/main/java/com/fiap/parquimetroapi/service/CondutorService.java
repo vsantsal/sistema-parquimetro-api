@@ -1,5 +1,6 @@
 package com.fiap.parquimetroapi.service;
 
+import com.fiap.parquimetroapi.dto.FormaPagamentoDTO;
 import com.fiap.parquimetroapi.model.Condutor;
 import com.fiap.parquimetroapi.repository.CondutorRepository;
 import com.fiap.parquimetroapi.dto.CondutorDTO;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 
 @Service
@@ -52,4 +54,22 @@ public class CondutorService {
         return condutorDeUsuario.get();
     }
 
+    public FormaPagamentoDTO registrarFormaPagamento(FormaPagamentoDTO dto) {
+        var usuarioLogado = RegistroCondutorService.getUsuarioLogado();
+        var formaPagamento = dto.toModel();
+        Optional<Condutor> possivelCondutor = condutorRepository
+                .findFirstByLogin(usuarioLogado.getLogin());
+
+        if (possivelCondutor.isEmpty()) {
+            throw new DataRetrievalFailureException("Recurso invalido");
+        }
+
+        Condutor condutor = possivelCondutor.get();
+        condutor.setFormaPagamento(formaPagamento);
+        condutorRepository.save(condutor);
+
+        return  new FormaPagamentoDTO(condutor);
+
+
+    }
 }
