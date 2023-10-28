@@ -6,19 +6,20 @@ public enum FormaPagamento {
     CARTAO_DE_CREDITO {
         @Override
         public List<TipoTempoEstacionado> getTiposAceitosTempoEstacionado() {
-            return null;
+            return List.of(TipoTempoEstacionado.FIXO, TipoTempoEstacionado.VARIAVEL);
         }
     },
     DEBITO {
         @Override
         public List<TipoTempoEstacionado> getTiposAceitosTempoEstacionado() {
-            return null;
+            return List.of(TipoTempoEstacionado.FIXO, TipoTempoEstacionado.VARIAVEL);
         }
     },
     PIX {
         @Override
         public List<TipoTempoEstacionado> getTiposAceitosTempoEstacionado() {
-            return null;
+
+            return List.of(TipoTempoEstacionado.FIXO);
         }
     };
 
