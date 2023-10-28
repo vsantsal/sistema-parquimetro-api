@@ -1,5 +1,6 @@
 package com.fiap.parquimetroapi.service;
 
+import com.fiap.parquimetroapi.dto.FormaPagamentoDTO;
 import com.fiap.parquimetroapi.model.Condutor;
 import com.fiap.parquimetroapi.repository.CondutorRepository;
 import com.fiap.parquimetroapi.dto.CondutorDTO;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 
 @Service
@@ -42,14 +44,45 @@ public class CondutorService {
 
     }
 
-    private Condutor validaUsuarioLogadoERetorna(String id){
-        var usuarioLogado = RegistroCondutorService.getUsuarioLogado();
-        var condutorDeUsuario = this.condutorRepository.findFirstByLogin(usuarioLogado.getLogin());
-        if (condutorDeUsuario.isEmpty() ||
-                !Objects.equals(condutorDeUsuario.get().getId(), id)){
-            throw new DataRetrievalFailureException("Recurso inválido");
-        }
-        return condutorDeUsuario.get();
+    public FormaPagamentoDTO registrarFormaPagamento(FormaPagamentoDTO dto) {
+        Condutor condutor = this.obterCondutorLogado();
+        var formaPagamento = dto.toModel();
+
+        condutor.setFormaPagamento(formaPagamento);
+        condutorRepository.save(condutor);
+
+        return  new FormaPagamentoDTO(condutor);
+
+
     }
 
+    public FormaPagamentoDTO consultarFormaPagamento() {
+        Condutor condutor = this.obterCondutorLogado();
+        try {
+            return new FormaPagamentoDTO(condutor);
+        } catch (NullPointerException ex) {
+            throw new DataRetrievalFailureException("Forma de pagamento preferida não registrada");
+        }
+    }
+
+    private Condutor obterCondutorLogado(){
+        var usuarioLogado = RegistroCondutorService.getUsuarioLogado();
+        Optional<Condutor> possivelCondutor = condutorRepository
+                .findFirstByLogin(usuarioLogado.getLogin());
+
+        if (possivelCondutor.isEmpty()) {
+            throw new DataRetrievalFailureException("Recurso invalido");
+        }
+
+        return possivelCondutor.get();
+
+    }
+
+    private Condutor validaUsuarioLogadoERetorna(String id){
+        var condutorDeUsuario = this.obterCondutorLogado();
+        if (!Objects.equals(condutorDeUsuario.getId(), id)){
+            throw new DataRetrievalFailureException("Recurso inválido");
+        }
+        return condutorDeUsuario;
+    }
 }

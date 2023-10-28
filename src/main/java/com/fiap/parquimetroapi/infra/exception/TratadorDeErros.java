@@ -22,8 +22,15 @@ public class TratadorDeErros {
         );
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity tratarErroDevolvendo400(IllegalArgumentException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                new ErroSoComMensagemValidacao(exception.getMessage())
+        );
+    }
+
     @ExceptionHandler(DataRetrievalFailureException.class)
-    public ResponseEntity tratarErroDevolvendo400(DataRetrievalFailureException exception) {
+    public ResponseEntity tratarErroDevolvendo404(DataRetrievalFailureException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ErroSoComMensagemValidacao(exception.getMessage())
         );

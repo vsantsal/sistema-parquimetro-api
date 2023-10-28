@@ -17,4 +17,6 @@ public class Condutor {
     private String email;
     private String telefone;
     private Usuario usuario;
+
+    private FormaPagamento formaPagamento;
 }

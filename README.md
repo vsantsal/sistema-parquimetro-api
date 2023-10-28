@@ -44,6 +44,8 @@ Não pretendemos sobrecarregar os leitores com uma especificação rígida e pes
 
 **Manter Condutor**: um condutor (isto e, um usuario autenticado), pode visualizar seus dados cadastrais na API, alem de atualiza-los ou solicitar inativaçao de sua conta. Nao lhe e permitida a visualizaçao de dados de outros participantes.
 
+**Manter Forma de Pagamento**: um condutor pode cadastrar, visualizar e alterar sua forma de pagamento preferida na API, que pode incluir cartao de credito, debito ou PIX (o ultimo apenas pode ser utilizado para pagamento de tempo estacionado fixo).
+
 
 # 📖 Funcionalidades
 
@@ -137,6 +139,41 @@ Um condutor logado somente poderá atualizar seus próprios dados.
 Para o DELETE, deve-se passar o id do condutor a remover no endpoint (por exemplo, `condutores/abcde`). 
 A aplicação marcará internamente o identificador `ativo` como false do modelo e retornará o STATUS CODE 204. 
 Assim como nos demais verbos, o usuário logado somente poderá inativar seu registro.
+
+## Manter Forma de Pagamento
+
+Nossa API Rest deve suportar a manutenção da forma de pagamento preferida de um condutor
+
+O enpdpoint será baseado em `/pagamentos/forma`, suportando os métodos HTTP GET, PUT, POST.
+
+O GET no endpoint é realizado sem passagem de ID.
+
+A resposta da requisição ocorre como no exemplo abaixo.
+
+```json
+{
+    "tipo": "PIX",
+    "tiposAceitosTempoEstacionado": ["FIXO"]
+}
+```
+
+Caso não possua forma de pagamento preferida registrada ainda, a aplicação lança erro e informa como abaixo.
+
+```json
+{
+  "mensagem": "Forma de pagamento preferida não registrada"
+}
+```
+Para o PUT e para o POST, deve-se passar no corpo da requisição o tipo de forma de pagamento desejado:
+
+```json
+{
+    "tipo": "CARTAO_DE_CREDITO"
+}
+```
+A aplicação fará as atualizações dos campos e retornará o STATUS CODE 200, em caso de sucesso.
+
+Um condutor logado somente poderá atualizar seus próprios dados.
 
 # 🗓️ Resumo Desenvolvimento
 
