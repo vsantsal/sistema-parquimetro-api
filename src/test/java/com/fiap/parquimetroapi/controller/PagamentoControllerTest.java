@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -115,6 +116,25 @@ class PagamentoControllerTest {
                                 .with(user(condutor.getUsuario())))
                 // Assert
                 .andExpect(status().isBadRequest())
+        ;
+
+    }
+
+    @DisplayName("Testa consulta de forma de pagamento para condutor sem forma registrada")
+    @Test
+    public void testCenario4() throws Exception {
+        // Arrange
+        condutorRepository.save(condutor);
+
+        // Act
+        this.mockMvc.perform(
+                        get(ENDPOINT_FORMA_PGTO)
+                                .with(user(condutor.getUsuario()))
+                )
+                // Assert
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.mensagem",
+                        Matchers.is("Forma de pagamento preferida não registrada")))
         ;
 
     }

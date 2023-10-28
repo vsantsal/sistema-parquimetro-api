@@ -58,7 +58,11 @@ public class CondutorService {
 
     public FormaPagamentoDTO consultarFormaPagamento() {
         Condutor condutor = this.obterCondutorLogado();
-        return new FormaPagamentoDTO(condutor);
+        try {
+            return new FormaPagamentoDTO(condutor);
+        } catch (NullPointerException ex) {
+            throw new DataRetrievalFailureException("Forma de pagamento preferida não registrada");
+        }
     }
 
     private Condutor obterCondutorLogado(){
