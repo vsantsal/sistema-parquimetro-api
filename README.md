@@ -46,7 +46,6 @@ Não pretendemos sobrecarregar os leitores com uma especificação rígida e pes
 
 **Manter Forma de Pagamento**: um condutor pode cadastrar, visualizar e alterar sua forma de pagamento preferida na API, que pode incluir cartao de credito, debito ou PIX (o ultimo apenas pode ser utilizado para pagamento de tempo estacionado fixo).
 
-
 # 📖 Funcionalidades
 
 Abaixo, descrevemos globalmente as funcionalidades implementadas.
@@ -174,6 +173,24 @@ Para o PUT e para o POST, deve-se passar no corpo da requisição o tipo de form
 A aplicação fará as atualizações dos campos e retornará o STATUS CODE 200, em caso de sucesso.
 
 Um condutor logado somente poderá atualizar seus próprios dados.
+
+# 🥼 Testes e CI/CD
+
+Há testes de integração para os controllers de modo a confirmar os principais comportamentos.
+
+Configuramos *workflow* no Actions para executar os testes em integrações de código no ramo principal (*main*), além de permitir seu *bot* a atualizar a *badge* de cobertura de código pelos testes.
+
+# 🐳 Contêineres
+
+Disponibilizamos imagem de modo a facilitar a execução local para testes pelos usuários.
+
+Para rodar, basta executar:
+
+`docker-compose up --build`
+
+Interrompe-se o contêiner por meio do comando:
+
+`docker-compose down`
 
 # 🗓️ Resumo Desenvolvimento
 
