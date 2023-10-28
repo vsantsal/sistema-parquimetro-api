@@ -22,6 +22,10 @@ public record FormaPagamentoDTO(
         }
 
         public FormaPagamento toModel() {
-                return FormaPagamento.valueOf(tipo());
+                try {
+                        return FormaPagamento.valueOf(tipo());
+                } catch (IllegalArgumentException ex){
+                        throw new IllegalArgumentException("Forma de pagamento '" + tipo() + "' inválida");
+                }
         }
 }
