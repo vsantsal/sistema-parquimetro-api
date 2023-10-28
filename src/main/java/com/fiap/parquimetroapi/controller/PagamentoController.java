@@ -29,4 +29,12 @@ public class PagamentoController {
         return ResponseEntity.ok(dtoSalvo);
     }
 
+    @PutMapping("/forma")
+    public ResponseEntity<FormaPagamentoDTO> atualizar(
+            @RequestBody @Valid FormaPagamentoDTO dto
+    ){
+        FormaPagamentoDTO dtoSalvo = condutorService.registrarFormaPagamento(dto);
+        return ResponseEntity.ok(dtoSalvo);
+    }
+
 }
