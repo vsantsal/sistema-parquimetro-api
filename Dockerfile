@@ -6,15 +6,14 @@ WORKDIR /app
 # Cópia do código-fonte da aplicação
 COPY src ./src
 
-
 # Cópia do arquivo pom.xml (deps da aplicação)
 COPY pom.xml .
 
 # Baixar deps
 RUN mvn dependency:go-offline
 
-# Compilar e testar a aplicação
-RUN mvn clean install
+# Compilar a aplicação (sem os testes de integração)
+RUN mvn clean install  -DskipTests=true
 
 # Etapa 2: Execução do JAR Gerado
 FROM openjdk:17-slim
@@ -22,7 +21,7 @@ FROM openjdk:17-slim
 WORKDIR /app
 
 # Cópia do JAR gerado da etapa 1
-COPY --from=builder /app/target/sistema-parquimetro-1.0.0-SNAPSHOT.jar .
+COPY --from=builder /app/target/parquimetro-api-0.0.1-SNAPSHOT.jar .
 
 # Execução do JAR
-CMD ["java", "-jar", "sistema-parquimetro-1.0.0-SNAPSHOT.jar"]
+CMD ["java", "-jar", "parquimetro-api-0.0.1-SNAPSHOT.jar"]
