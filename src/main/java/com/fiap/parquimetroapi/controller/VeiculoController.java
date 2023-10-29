@@ -38,4 +38,12 @@ public class VeiculoController {
         return ResponseEntity.ok(dto);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<VeiculoDTO> detalhar(
+            @PathVariable String id
+    ){
+        var dto = this.condutorService.detalharVeiculo(id);
+        return ResponseEntity.ok(dto);
+    }
+
 }

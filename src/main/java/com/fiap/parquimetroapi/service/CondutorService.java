@@ -126,10 +126,26 @@ public class CondutorService {
 
     public List<VeiculoDTO> listarVeiculos() {
         var condutorDeUsuario = this.obterCondutorLogado();
-        return veiculoRepository
+        var veiculos = veiculoRepository
                 .findByCondutor(condutorDeUsuario)
                 .stream()
                 .map(VeiculoDTO::new)
                 .toList();
+
+        if (veiculos.isEmpty()) {
+            throw new DataRetrievalFailureException("Recurso não encontrado");
+        }
+
+        return veiculos;
+    }
+
+    public VeiculoDTO detalharVeiculo(String id) {
+        var condutorDeUsuario = this.obterCondutorLogado();
+        var veiculoObtido = veiculoRepository
+                .findByIdAndCondutor(id, condutorDeUsuario)
+                .orElseThrow(
+                        () -> new DataRetrievalFailureException("Recurso não encontrado")
+                );
+        return new VeiculoDTO(veiculoObtido);
     }
 }
