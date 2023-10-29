@@ -182,7 +182,7 @@ Configuramos *workflow* no Actions para executar os testes em integrações de c
 
 # 🐳 Contêineres
 
-Disponibilizamos imagem de modo a facilitar a execução local para testes pelos usuários.
+Disponibilizamos imagem de modo a possibilitar explorações e testes manuais da aplicação pelos usuários.
 
 Para rodar, basta executar:
 
