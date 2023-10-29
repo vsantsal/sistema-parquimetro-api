@@ -216,6 +216,10 @@ Caso algum usuário já esteja utilizando o carro, também há sinalização de 
 }
 ```
 
+O GET no endpoint pode ser realizado com ou sem a passagem de ID do veículo. 
+Quando for passado ID, o retorno é o mesmo do POST após o cadastro do veículo. Sem ID, retorna lista desses mesmos DTOs.
+O condutor somente poderá visualizar veículos associados à sua conta.
+
 Para o DELETE, deve-se passar o id do veículo a remover no endpoint (por exemplo, `veiculos/xyz`).
 A aplicação marcará internamente o identificador `ativo` como false do modelo e retornará o STATUS CODE 204.
 Assim como nos demais verbos, o usuário logado somente poderá inativar veículos associados a sua conta.
