@@ -46,7 +46,7 @@ public class AuthenticationController {
 
     @PostMapping("/registrar")
     public ResponseEntity registrar(@RequestBody @Valid RegistroCondutorDTO dto) {
-        registroService.registrar(dto);
-        return ResponseEntity.ok().build();
+        var dtoSalvo = registroService.registrar(dto);
+        return ResponseEntity.ok(dtoSalvo);
     }
 }
