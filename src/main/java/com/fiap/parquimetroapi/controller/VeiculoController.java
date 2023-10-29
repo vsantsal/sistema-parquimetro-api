@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/veiculos")
 public class VeiculoController {
@@ -28,6 +30,12 @@ public class VeiculoController {
     ){
         this.condutorService.desassociaVeiculo(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<VeiculoDTO>> listar(){
+        var dto = this.condutorService.listarVeiculos();
+        return ResponseEntity.ok(dto);
     }
 
 }

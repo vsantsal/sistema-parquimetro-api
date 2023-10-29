@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -210,6 +211,119 @@ class VeiculoControllerTest {
         assertTrue(veiculoAtualizado.isPresent());
         assertTrue(veiculoAtualizado.get().isAtivo());
 
+    }
+
+    @DisplayName("Listagem de veículos para repositório vazio")
+    @Test
+    public void testCenario6() throws Exception {
+        // Arrange
+        condutorRepository.save(condutor);
+
+        // Act
+        this.mockMvc.perform(
+                        get(ENDPOINT)
+                                .with(user(condutor.getUsuario()))
+                )
+                // Assert
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$",
+                        Matchers.hasSize(0)));
+    }
+
+    @DisplayName("Listagem de veículos para repositório não vazio sem veículo associado ao condutor")
+    @Test
+    public void testCenario7() throws Exception {
+        // Arrange
+        Condutor outroCondutor =  new CondutorDTO(
+                "Ciclano",
+                "Endereço do Ciclano",
+                "ciclano@email.com",
+                "987654321",
+                null
+        ).toModel();
+        outroCondutor.setUsuario(
+                new Usuario("username2", "654321"));
+        condutorRepository.save(condutor);
+        condutorRepository.save(outroCondutor);
+        Veiculo veiculo = new Veiculo(Placa.criar("ABC1234"));
+        veiculo.setCondutor(outroCondutor);
+        veiculoRepository.save(veiculo);
+
+        // Act
+        this.mockMvc.perform(
+                        get(ENDPOINT)
+                                .with(user(condutor.getUsuario()))
+                )
+                // Assert
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$",
+                        Matchers.hasSize(0)));
+    }
+
+    @DisplayName("Listagem de veículos para repositório com 1 veículo associado ao condutor")
+    @Test
+    public void testCenario8() throws Exception {
+        // Arrange
+        condutorRepository.save(condutor);
+        Veiculo veiculo = new Veiculo(Placa.criar("ABC1234"));
+        veiculo.setCondutor(condutor);
+        veiculoRepository.save(veiculo);
+
+        // Act
+        this.mockMvc.perform(
+                        get(ENDPOINT)
+                                .with(user(condutor.getUsuario()))
+                )
+                // Assert
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$",
+                        Matchers.hasSize(1)))
+                .andExpect(jsonPath("$[0].veiculoId",
+                        Matchers.is(veiculo.getId())))
+                .andExpect(jsonPath("$[0].condutorId",
+                        Matchers.is(condutor.getId())))
+                .andExpect(jsonPath("$[0].placa",
+                        Matchers.is(veiculo.getPlaca().toString())))
+        ;
+    }
+
+    @DisplayName("Listagem de veículos para repositório com mais veículos associados ao condutor")
+    @Test
+    public void testCenario9() throws Exception {
+        // Arrange
+        condutorRepository.save(condutor);
+        // Veículo 1
+        Veiculo veiculo1 = new Veiculo(Placa.criar("ABC1234"));
+        veiculo1.setCondutor(condutor);
+        veiculoRepository.save(veiculo1);
+
+        // Veículo 2
+        Veiculo veiculo2 = new Veiculo(Placa.criar("DEF5G78"));
+        veiculo2.setCondutor(condutor);
+        veiculoRepository.save(veiculo2);
+
+        // Act
+        this.mockMvc.perform(
+                        get(ENDPOINT)
+                                .with(user(condutor.getUsuario()))
+                )
+                // Assert
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$",
+                        Matchers.hasSize(2)))
+                .andExpect(jsonPath("$[0].veiculoId",
+                        Matchers.is(veiculo1.getId())))
+                .andExpect(jsonPath("$[0].condutorId",
+                        Matchers.is(condutor.getId())))
+                .andExpect(jsonPath("$[0].placa",
+                        Matchers.is(veiculo1.getPlaca().toString())))
+                .andExpect(jsonPath("$[1].veiculoId",
+                        Matchers.is(veiculo2.getId())))
+                .andExpect(jsonPath("$[1].condutorId",
+                        Matchers.is(condutor.getId())))
+                .andExpect(jsonPath("$[1].placa",
+                        Matchers.is(veiculo2.getPlaca().toString())))
+        ;
     }
 
 }

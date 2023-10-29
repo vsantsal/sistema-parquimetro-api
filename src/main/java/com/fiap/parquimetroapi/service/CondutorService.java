@@ -12,6 +12,7 @@ import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -121,5 +122,14 @@ public class CondutorService {
 
         throw new DataRetrievalFailureException(
                 "Não foi possível identificar veículo com o id '" + id + "'");
+    }
+
+    public List<VeiculoDTO> listarVeiculos() {
+        var condutorDeUsuario = this.obterCondutorLogado();
+        return veiculoRepository
+                .findByCondutor(condutorDeUsuario)
+                .stream()
+                .map(VeiculoDTO::new)
+                .toList();
     }
 }
