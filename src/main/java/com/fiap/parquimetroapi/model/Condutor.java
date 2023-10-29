@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Document
@@ -21,5 +22,9 @@ public class Condutor {
     private FormaPagamento formaPagamento;
 
     @DBRef
-    private List<Veiculo> veiculos;
+    private List<Veiculo> veiculos = new ArrayList<>();
+
+    public void associa(Veiculo veiculo){
+        veiculos.add(veiculo);
+    }
 }

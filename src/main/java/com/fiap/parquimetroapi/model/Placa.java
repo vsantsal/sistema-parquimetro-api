@@ -22,7 +22,7 @@ public class Placa {
                 .filter(valor::matches)
                 .findFirst()
                 .orElseThrow(
-                        () -> new PlacaInvalidaException("valor incorreto de placa informado")
+                        () -> new PlacaInvalidaException("Valor incorreto de placa informado")
                 );
 
         // Cria placa se padrão válido

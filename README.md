@@ -176,6 +176,47 @@ A aplicação fará as atualizações dos campos e retornará o STATUS CODE 200,
 
 Um condutor logado somente poderá atualizar seus próprios dados.
 
+## Manter Veículo
+
+Nossa API Rest deve suportar a manutenção de veículos pelos condutores.
+
+O enpdpoint será baseado em `/veiculos`, suportando os métodos HTTP GET, POST e DELETE.
+
+Para o POST, o *body* de cada requisição deve informar JSON no seguinte formato:
+
+```json
+{
+  "placa": "ABC1234"
+}
+```
+
+A resposta da requisição ocorre como no exemplo abaixo, trazendo, além da placa informada (caso seja válida), os ids do veículo e do condutor que o cadastrou.
+
+```json
+{
+  "placa": "ABC1234",
+  "veiculoId": "123ab1cd3456d2ed65b2d3f",
+  "condutorId": "123a12345feb343a11a2a588"
+}
+```
+
+Caso a placa informada seja inválida, a aplicação retorna a mensagem de erro abaixo.
+
+```json
+{
+  "mensagem": "Valor incorreto de placa informado"
+}
+```
+
+Caso algum usuário já esteja utilizando o carro, também há sinalização de erro.
+
+```json
+{
+  "mensagem": "Veículo já em uso na plataforma"
+}
+```
+
+
 # 🥼 Testes e CI/CD
 
 Há testes de integração para os controllers de modo a confirmar os principais comportamentos.
