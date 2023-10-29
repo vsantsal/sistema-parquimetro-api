@@ -216,6 +216,9 @@ Caso algum usuário já esteja utilizando o carro, também há sinalização de 
 }
 ```
 
+Para o DELETE, deve-se passar o id do veículo a remover no endpoint (por exemplo, `veiculos/xyz`).
+A aplicação marcará internamente o identificador `ativo` como false do modelo e retornará o STATUS CODE 204.
+Assim como nos demais verbos, o usuário logado somente poderá inativar veículos associados a sua conta.
 
 # 🥼 Testes e CI/CD
 
