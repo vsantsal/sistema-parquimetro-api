@@ -1,6 +1,8 @@
 package com.fiap.parquimetroapi.infra.exception;
 
 import com.fiap.parquimetroapi.exception.CondutorExistenteException;
+import com.fiap.parquimetroapi.exception.PlacaInvalidaException;
+import com.fiap.parquimetroapi.exception.VeiculoExistenteException;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +24,8 @@ public class TratadorDeErros {
         );
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity tratarErroDevolvendo400(IllegalArgumentException exception) {
+    @ExceptionHandler({IllegalArgumentException.class, PlacaInvalidaException.class})
+    public ResponseEntity tratarErroDevolvendo400(Exception exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                 new ErroSoComMensagemValidacao(exception.getMessage())
         );
@@ -43,8 +45,8 @@ public class TratadorDeErros {
         );
     }
 
-    @ExceptionHandler(CondutorExistenteException.class)
-    public ResponseEntity tratarErroDevolvendo409(CondutorExistenteException exception) {
+    @ExceptionHandler({CondutorExistenteException.class, VeiculoExistenteException.class})
+    public ResponseEntity tratarErroDevolvendo409(Exception exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(
                 new ErroSoComMensagemValidacao(exception.getMessage())
         );

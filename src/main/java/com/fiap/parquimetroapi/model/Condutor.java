@@ -1,11 +1,12 @@
 package com.fiap.parquimetroapi.model;
 
-import jakarta.validation.constraints.Email;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Document
 @Data
@@ -19,4 +20,11 @@ public class Condutor {
     private Usuario usuario;
 
     private FormaPagamento formaPagamento;
+
+    @DBRef
+    private List<Veiculo> veiculos = new ArrayList<>();
+
+    public void associa(Veiculo veiculo){
+        veiculos.add(veiculo);
+    }
 }

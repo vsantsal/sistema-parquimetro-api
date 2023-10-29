@@ -44,6 +44,8 @@ Não pretendemos sobrecarregar os leitores com uma especificação rígida e pes
 
 **Manter Condutor**: um condutor (isto e, um usuario autenticado), pode visualizar seus dados cadastrais na API, alem de atualiza-los ou solicitar inativaçao de sua conta. Nao lhe e permitida a visualizaçao de dados de outros participantes.
 
+**Manter Veículo**: um condutor pode visualizar os veículos associados a sua conta na API, além registrar ou excluir. Um condutor pode vincular vários veículos à sua conta. Na versão inicial do programa, cada veículo somente poderá estar associado a um condutor por vez.
+
 **Manter Forma de Pagamento**: um condutor pode cadastrar, visualizar e alterar sua forma de pagamento preferida na API, que pode incluir cartao de credito, debito ou PIX (o ultimo apenas pode ser utilizado para pagamento de tempo estacionado fixo).
 
 # 📖 Funcionalidades
@@ -174,6 +176,54 @@ A aplicação fará as atualizações dos campos e retornará o STATUS CODE 200,
 
 Um condutor logado somente poderá atualizar seus próprios dados.
 
+## Manter Veículo
+
+Nossa API Rest deve suportar a manutenção de veículos pelos condutores.
+
+O enpdpoint será baseado em `/veiculos`, suportando os métodos HTTP GET, POST e DELETE.
+
+Para o POST, o *body* de cada requisição deve informar JSON no seguinte formato:
+
+```json
+{
+  "placa": "ABC1234"
+}
+```
+
+A resposta da requisição ocorre como no exemplo abaixo, trazendo, além da placa informada (caso seja válida), os ids do veículo e do condutor que o cadastrou.
+
+```json
+{
+  "placa": "ABC1234",
+  "veiculoId": "123ab1cd3456d2ed65b2d3f",
+  "condutorId": "123a12345feb343a11a2a588"
+}
+```
+
+Caso a placa informada seja inválida, a aplicação retorna a mensagem de erro abaixo.
+
+```json
+{
+  "mensagem": "Valor incorreto de placa informado"
+}
+```
+
+Caso algum usuário já esteja utilizando o carro, também há sinalização de erro.
+
+```json
+{
+  "mensagem": "Veículo já em uso na plataforma"
+}
+```
+
+O GET no endpoint pode ser realizado com ou sem a passagem de ID do veículo. 
+Quando for passado ID, o retorno é o mesmo do POST após o cadastro do veículo. Sem ID, retorna lista desses mesmos DTOs.
+O condutor somente poderá visualizar veículos associados à sua conta.
+
+Para o DELETE, deve-se passar o id do veículo a remover no endpoint (por exemplo, `veiculos/xyz`).
+A aplicação marcará internamente o identificador `ativo` como false do modelo e retornará o STATUS CODE 204.
+Assim como nos demais verbos, o usuário logado somente poderá inativar veículos associados a sua conta.
+
 # 🥼 Testes e CI/CD
 
 Há testes de integração para os controllers de modo a confirmar os principais comportamentos.
@@ -197,3 +247,4 @@ Interrompe-se o contêiner por meio do comando:
 * Para os testes, subimos um banco de dados de testes `MongoDB` em vez de recorrer a banco em memória. Para tanto, recorremos à classe `MongoTemplate`, conforme documentação em https://docs.spring.io/spring-data/mongodb/docs/current/api/org/springframework/data/mongodb/core/MongoTemplate.html;
 * Para permitir que os testes de integração fossem executados no `Github Actions`, conferimos a documentação disponível em https://github.com/marketplace/actions/mongodb-in-github-actions de modo a criar o `step` necessário a subir o servidor;
 * Em https://docs.github.com/en/actions/learn-github-actions/variables, visualizamos como informar variáveis de ambiente para serem usadas em execuções de testes no `Github Actions`; 
+* Em https://spring.io/blog/2021/11/29/spring-data-mongodb-relation-modelling, visualizamos como implementar o relacionamento modelado entre condutores e veículos;

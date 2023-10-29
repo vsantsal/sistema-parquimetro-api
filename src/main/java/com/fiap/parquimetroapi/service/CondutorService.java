@@ -1,14 +1,18 @@
 package com.fiap.parquimetroapi.service;
 
 import com.fiap.parquimetroapi.dto.FormaPagamentoDTO;
+import com.fiap.parquimetroapi.dto.VeiculoDTO;
+import com.fiap.parquimetroapi.exception.VeiculoExistenteException;
 import com.fiap.parquimetroapi.model.Condutor;
 import com.fiap.parquimetroapi.repository.CondutorRepository;
 import com.fiap.parquimetroapi.dto.CondutorDTO;
+import com.fiap.parquimetroapi.repository.VeiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -18,6 +22,9 @@ public class CondutorService {
 
     @Autowired
     private CondutorRepository condutorRepository;
+
+    @Autowired
+    private VeiculoRepository veiculoRepository;
 
     public CondutorDTO detalhar(String id) {
         var condutorDeUsuario = validaUsuarioLogadoERetorna(id);
@@ -84,5 +91,61 @@ public class CondutorService {
             throw new DataRetrievalFailureException("Recurso inválido");
         }
         return condutorDeUsuario;
+    }
+
+    public VeiculoDTO registrarVeiculo(VeiculoDTO dto) {
+        //
+        var condutorDeUsuario = this.obterCondutorLogado();
+        var veiculoInformado = dto.toModel();
+
+        //
+        if (veiculoRepository.existsByPlaca(veiculoInformado.getPlaca()))
+            throw new VeiculoExistenteException("Veículo já em uso na plataforma");
+
+        //
+        veiculoInformado.setCondutor(condutorDeUsuario);
+        var veiculoSalvo = veiculoRepository.save(veiculoInformado);
+        condutorDeUsuario.associa(veiculoSalvo);
+        condutorRepository.save(condutorDeUsuario);
+        return new VeiculoDTO(veiculoSalvo);
+    }
+
+    public void desassociaVeiculo(String id) {
+        var condutorDeUsuario = this.obterCondutorLogado();
+        var veiculoPesquisado = veiculoRepository.findById(id);
+        if (veiculoPesquisado.isPresent() &&
+                veiculoPesquisado.get().getCondutor().getId().equals(condutorDeUsuario.getId())) {
+            veiculoPesquisado.get().inativa();
+            veiculoRepository.save(veiculoPesquisado.get());
+            return;
+        }
+
+        throw new DataRetrievalFailureException(
+                "Não foi possível identificar veículo com o id '" + id + "'");
+    }
+
+    public List<VeiculoDTO> listarVeiculos() {
+        var condutorDeUsuario = this.obterCondutorLogado();
+        var veiculos = veiculoRepository
+                .findByCondutor(condutorDeUsuario)
+                .stream()
+                .map(VeiculoDTO::new)
+                .toList();
+
+        if (veiculos.isEmpty()) {
+            throw new DataRetrievalFailureException("Recurso não encontrado");
+        }
+
+        return veiculos;
+    }
+
+    public VeiculoDTO detalharVeiculo(String id) {
+        var condutorDeUsuario = this.obterCondutorLogado();
+        var veiculoObtido = veiculoRepository
+                .findByIdAndCondutor(id, condutorDeUsuario)
+                .orElseThrow(
+                        () -> new DataRetrievalFailureException("Recurso não encontrado")
+                );
+        return new VeiculoDTO(veiculoObtido);
     }
 }
