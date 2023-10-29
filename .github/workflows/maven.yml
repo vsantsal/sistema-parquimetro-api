@@ -37,6 +37,8 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
       env:
-          HOST: localhost
+          HOST: mongodb
+          PORT: localhost
+          DATABASE: parquimetro
           JWT_SECRET: localhost-jwt-secret
           JWT_ISSUER: localhost-jwt-issuer
