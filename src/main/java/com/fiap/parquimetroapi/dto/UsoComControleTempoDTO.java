@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.br.CNPJ;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record UsoComControleTempoDTO(
         @NotBlank
@@ -33,6 +34,8 @@ public record UsoComControleTempoDTO(
 
         BigDecimal total,
 
+        List<String> alertas,
+
         String id
 
 ) {
@@ -47,6 +50,7 @@ public record UsoComControleTempoDTO(
                 uso.getDuracaoEsperada().toString(),
                 uso.getFim(),
                 uso.getValorDevido(),
+                uso.getAlertasEmitidos(),
                 uso.getId()
         );
     }

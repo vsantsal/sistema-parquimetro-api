@@ -304,6 +304,64 @@ Se condutor tentar estacionar veículo inexistente ou não associado à sua cont
 }
 ```
 
+## Controlar Tempo Estacionado \ Alertar Tempo Estacionado
+
+Os dois casos de uso são observados pelos condutores através do método GET *endpoint* `/estacionamentos/usar`, com ou sem passagem de `id` (naturalmente, o segundo caso também ao receberem e-mail\notificação no app).
+
+Especialmente considerando os períodos de grande demanda, e a expectativa de, para cada condutor logado, haver um histórico razoável de usos de estacionamento, adota-se estratégia de paginação para apresentá-lo aos condutores. 
+
+O retorno paginado acontece conforme exemplo abaixo:
+
+```json
+{
+    "content": [
+        {
+            "placaVeiculo": "ABC1234",
+            "cnpjEstacionamento": "71146289000108",
+            "tipoTempoEstacionado": "VARIAVEL",
+            "inicio": "2023-10-31T14:36:00",
+            "duracaoDecorrida": "PT3H18M32.115785725S",
+            "duracaoLimite": "PT4H",
+            "fim": null,
+            "total": null,
+            "alertas": [
+                "Tempo de estacionamento prestes a expirar. Estacionamento será estendido automaticamente caso não seja encerrado.",
+                "Tempo de estacionamento prestes a expirar. Estacionamento será estendido automaticamente caso não seja encerrado.",
+                "Tempo de estacionamento prestes a expirar. Estacionamento será estendido automaticamente caso não seja encerrado."
+            ],
+            "id": "65414db356e09205d7e79ef4"
+        }
+    ],
+    "pageable": {
+        "pageNumber": 0,
+        "pageSize": 10,
+        "sort": {
+            "empty": false,
+            "sorted": true,
+            "unsorted": false
+        },
+        "offset": 0,
+        "paged": true,
+        "unpaged": false
+    },
+    "last": true,
+    "totalPages": 1,
+    "totalElements": 1,
+    "size": 10,
+    "number": 0,
+    "sort": {
+        "empty": false,
+        "sorted": true,
+        "unsorted": false
+    },
+    "first": true,
+    "numberOfElements": 1,
+    "empty": false
+}
+
+
+```
+
 # 🥼 Testes e CI/CD
 
 Há testes de integração para os controllers de modo a confirmar os principais comportamentos.

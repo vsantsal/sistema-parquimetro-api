@@ -12,6 +12,8 @@ import com.fiap.parquimetroapi.repository.EstacionamentoRepository;
 import com.fiap.parquimetroapi.repository.UsoEstacionamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -113,7 +115,7 @@ public class UsoEstacionamentoService {
     public UsoComControleTempoDTO detalhar(String id, LocalDateTime hora) {
         // Mensagem de erro
         String mensagem = "Não foi possível identificar o uso com id + '" + id + "'";
-        // Obtém condutor logado e veículo informado no dto
+        // Obtém condutor logado
         var condutorLogado = condutorService.obterCondutorLogado();
         // Obtém usoEstacionamentoSolicitado
         var uso = this.usoEstacionamentoRepository.findById(id);
@@ -131,5 +133,14 @@ public class UsoEstacionamentoService {
         usoEstacionamentoRepository.save(usoASalvar);
         return new UsoComControleTempoDTO(usoASalvar);
 
+    }
+
+    public Page<UsoComControleTempoDTO> listar(Pageable paginacao) {
+        // Obtém condutor logado
+        var condutorLogado = condutorService.obterCondutorLogado();
+        // Retorna histórico
+        return usoEstacionamentoRepository
+                .findAllByCondutor(condutorLogado, paginacao)
+                .map(UsoComControleTempoDTO::new);
     }
 }
