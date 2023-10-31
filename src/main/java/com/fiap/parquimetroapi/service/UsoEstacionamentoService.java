@@ -3,6 +3,7 @@ package com.fiap.parquimetroapi.service;
 import com.fiap.parquimetroapi.dto.UsoEstacionamentoDTO;
 import com.fiap.parquimetroapi.exception.FormaPagamentoAusenteException;
 import com.fiap.parquimetroapi.exception.TipoTempoEstacionadoInvalido;
+import com.fiap.parquimetroapi.exception.VeiculoInexistenteException;
 import com.fiap.parquimetroapi.model.Estacionamento;
 import com.fiap.parquimetroapi.model.TipoTempoEstacionado;
 import com.fiap.parquimetroapi.model.UsoEstacionamento;
@@ -53,7 +54,12 @@ public class UsoEstacionamentoService {
                 .getVeiculos()
                 .stream()
                 .filter(v -> dto.idVeiculo().equals(v.getId()))
-                .findFirst().get();
+                .findFirst().orElseThrow(
+                        () -> new VeiculoInexistenteException(
+                                "Não foi possível localizar o veículo correspondente ao id '" +
+                                        dto.idVeiculo() + "'"
+                        )
+                );
 
         // Otém estacionamento - cria novo caso não encontre (solução provisória)
         Estacionamento estacionamento;

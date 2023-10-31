@@ -27,7 +27,8 @@ public class TratadorDeErros {
             PlacaInvalidaException.class,
             FormaPagamentoAusenteException.class,
             TipoTempoEstacionadoInvalido.class,
-            ConstanteEnumInexistenteException.class
+            ConstanteEnumInexistenteException.class,
+            VeiculoInexistenteException.class
     })
     public ResponseEntity tratarErroDevolvendo400(Exception exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(

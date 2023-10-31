@@ -119,6 +119,8 @@ class UsoEstacionamentoControllerTest {
                 )
                 // Assert
                 .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.mensagem",
+                        Matchers.is("É necessário selecionar forma de pagamento válida antes de estacionar")))
         ;
 
     }
@@ -178,6 +180,36 @@ class UsoEstacionamentoControllerTest {
                         Matchers.is("Valor 'INEXISTENTE' inválido para 'tipoTempoEstacionado'")))
 
 
+        ;
+
+    }
+
+    @DisplayName("Testa não é possível iniciar estacionamento com veículo não associado")
+    @Test
+    public void testCenario5() throws Exception {
+        // Arrange
+        condutor.setFormaPagamento(FormaPagamento.PIX);
+        veiculoRepository.save(veiculo);
+        condutorRepository.save(condutor);
+
+        // Act
+        this.mockMvc.perform(
+                        post(RAIZ_ENDPOINT + SUFIXO_ENDPOINT_INICIO_REGISTRO)
+                                .with(user(condutor.getUsuario()))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        "{\"idVeiculo\": \"" + veiculo.getId() +"\" ," +
+                                                "\"cnpjEstacionamento\": \"" + CNPJ_ESTACIONAMENTO +"\" ," +
+                                                "\"tipoTempoEstacionado\": \"FIXO\" ," +
+                                                "\"inicio\": \"" + LocalDateTime.now() +"\"}"
+                                )
+                )
+                // Assert
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.mensagem",
+                        Matchers.is(
+                                "Não foi possível localizar o veículo correspondente ao id '" +
+                                veiculo.getId() + "'")))
         ;
 
     }
