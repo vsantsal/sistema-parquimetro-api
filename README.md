@@ -56,7 +56,7 @@ Não pretendemos sobrecarregar os leitores com uma especificação rígida e pes
 
 **Manter Forma de Pagamento**: um condutor pode cadastrar, visualizar e alterar sua forma de pagamento preferida na API, que pode incluir cartao de credito, debito ou PIX (o ultimo apenas pode ser utilizado para pagamento de tempo estacionado fixo).
 
-**Iniciar período de estacionamento**: um condutor com forma de pagamento registrada pode iniciar o registro de tempo no sistema, informando veículo a estacionar, estacionamento e escolhendo entre tempo fixo (com duração desejada) ou por hora.
+**Iniciar período de estacionamento**: um condutor com forma de pagamento registrada pode iniciar o registro de tempo no sistema, informando veículo a estacionar e estacionamento, além de escolher entre tempo fixo (com duração desejada) ou por hora.
 
 # 📖 Funcionalidades
 

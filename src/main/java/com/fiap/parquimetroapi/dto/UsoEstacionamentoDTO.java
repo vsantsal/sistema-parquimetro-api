@@ -1,0 +1,45 @@
+package com.fiap.parquimetroapi.dto;
+
+import com.fiap.parquimetroapi.model.UsoEstacionamento;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.br.CNPJ;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+public record UsoEstacionamentoDTO (
+    @NotBlank
+    String idVeiculo,
+
+    @NotBlank
+    @CNPJ
+    String cnpjEstacionamento,
+
+    @NotBlank
+    String tipoTempoEstacionado,
+
+    @NotNull
+    LocalDateTime inicio,
+
+    LocalDateTime fim,
+
+    BigDecimal total,
+
+    String id
+
+
+){
+
+    public UsoEstacionamentoDTO(UsoEstacionamento uso) {
+        this(
+                uso.getVeiculo().getId(),
+                uso.getEstacionamento().getCnpj(),
+                uso.getTipoTempoEstacionado().toString(),
+                uso.getInicio(),
+                uso.getFim(),
+                uso.getValorDevido(),
+                uso.getId()
+        );
+    }
+}
