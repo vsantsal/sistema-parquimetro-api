@@ -14,6 +14,10 @@ Api para sistema de parquímetro
 ![server_ci](https://img.shields.io/badge/Github%20Actions-282a2e?style=for-the-badge&logo=githubactions&logoColor=367cfe)
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 
+
+![example workflow](https://github.com/vsantsal/sistema-parquimetro-api/actions/workflows/maven.yml/badge.svg)
+![Coverage](.github/badges/jacoco.svg)
+
 Sistema de parquímetro para atender a demanda de estacionamento crescente de cidade turística.
 
 Haja vista o aumento significativo durante alta temporada, de quase 100% da frota de veículos utilizando o sistema, é um importante requisito que a solução seja escalável.
@@ -244,7 +248,11 @@ Interrompe-se o contêiner por meio do comando:
 
 # 🗓️ Resumo Desenvolvimento
 
+* Para cadastro de usuários e login na aplicação, adicionamos dependências [*Spring Security*](https://spring.io/projects/spring-security) e [*auth0/java-jwt*](https://github.com/auth0/java-jwt);
 * Para os testes, subimos um banco de dados de testes `MongoDB` em vez de recorrer a banco em memória. Para tanto, recorremos à classe `MongoTemplate`, conforme documentação em https://docs.spring.io/spring-data/mongodb/docs/current/api/org/springframework/data/mongodb/core/MongoTemplate.html;
+* Configuramos *workflow* de execução de testes automáticos quando houver integração ao ramo principal (`main`) por meio do *Github Actions*;
 * Para permitir que os testes de integração fossem executados no `Github Actions`, conferimos a documentação disponível em https://github.com/marketplace/actions/mongodb-in-github-actions de modo a criar o `step` necessário a subir o servidor;
-* Em https://docs.github.com/en/actions/learn-github-actions/variables, visualizamos como informar variáveis de ambiente para serem usadas em execuções de testes no `Github Actions`; 
+* Em https://docs.github.com/en/actions/learn-github-actions/variables, visualizamos como informar variáveis de ambiente para serem usadas em execuções de testes no `Github Actions`;
+* Implementação de métrica de cobertura de código pelos testes, com habilitação do *github-actions bot* para gerar *badge*;
 * Em https://spring.io/blog/2021/11/29/spring-data-mongodb-relation-modelling, visualizamos como implementar o relacionamento modelado entre condutores e veículos;
+* * Incluímos `Dockerfile` e `docker-compose.yml` para disponibilizar imagem de modo a facilitar explorações manuais que se deseje fazer da aplicação.
