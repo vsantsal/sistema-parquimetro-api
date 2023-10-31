@@ -99,4 +99,27 @@ class UsoEstacionamentoTest {
                 usoEstacionamento.getAlertasEmitidos().get(0));
     }
 
+    @DisplayName("Teste monitoramento deve finalizar uso de estacionamento ao finalizar o tempo fixo")
+    @Test
+    public void testCenario5() {
+        // Arrange
+        usoEstacionamento.setTipoTempoEstacionado(TipoTempoEstacionado.FIXO);
+        usoEstacionamento.setDuracaoEsperada(Duration.ofHours(2L));
+        LocalDateTime dataHoraEncerramento = LocalDateTime
+                .of(2023, 10, 1, 12, 30, 15);
+
+        // Act
+        usoEstacionamento.monitora(dataHoraEncerramento);
+
+        // Assert
+        assertEquals(
+                TipoTempoEstacionado.FIXO.getAlerta(),
+                usoEstacionamento.getAlertasEmitidos().get(0)
+        );
+        assertEquals(
+                dataHoraEncerramento,
+                usoEstacionamento.getFim()
+        );
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.fiap.parquimetroapi.service;
 
+import com.fiap.parquimetroapi.dto.UsoComControleTempoDTO;
 import com.fiap.parquimetroapi.dto.UsoEstacionamentoDTO;
 import com.fiap.parquimetroapi.exception.FormaPagamentoAusenteException;
 import com.fiap.parquimetroapi.exception.TipoTempoEstacionadoInvalido;
@@ -10,6 +11,7 @@ import com.fiap.parquimetroapi.model.UsoEstacionamento;
 import com.fiap.parquimetroapi.repository.EstacionamentoRepository;
 import com.fiap.parquimetroapi.repository.UsoEstacionamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -37,7 +39,7 @@ public class UsoEstacionamentoService {
      * TODO: evoluir aplicação para que o cadastro de estacionamentos habilitados seja feito em outro
      *  endpoint e usuários com role específica
      * */
-    public UsoEstacionamentoDTO iniciarRegistro(UsoEstacionamentoDTO dto) {
+    public UsoComControleTempoDTO iniciarRegistro(UsoEstacionamentoDTO dto) {
         // Obtém condutor logado e veículo informado no dto
         var condutorLogado = condutorService.obterCondutorLogado();
 
@@ -105,6 +107,29 @@ public class UsoEstacionamentoService {
 
         usoEstacionamentoRepository.save(uso);
 
-        return new UsoEstacionamentoDTO(uso);
+        return new UsoComControleTempoDTO(uso);
+    }
+
+    public UsoComControleTempoDTO detalhar(String id, LocalDateTime hora) {
+        // Mensagem de erro
+        String mensagem = "Não foi possível identificar o uso com id + '" + id + "'";
+        // Obtém condutor logado e veículo informado no dto
+        var condutorLogado = condutorService.obterCondutorLogado();
+        // Obtém usoEstacionamentoSolicitado
+        var uso = this.usoEstacionamentoRepository.findById(id);
+        uso.ifPresentOrElse(
+                (valor) -> {
+                    if (valor.getCondutor().getId().equals(condutorLogado.getId())) {
+                        valor.monitora(hora);
+                    } else {
+                        throw new DataRetrievalFailureException(mensagem);
+                    }
+                },
+                () -> new DataRetrievalFailureException(mensagem)
+        );
+        var usoASalvar = uso.get();
+        usoEstacionamentoRepository.save(usoASalvar);
+        return new UsoComControleTempoDTO(usoASalvar);
+
     }
 }
