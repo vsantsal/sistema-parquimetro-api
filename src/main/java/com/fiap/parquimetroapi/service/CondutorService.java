@@ -72,7 +72,7 @@ public class CondutorService {
         }
     }
 
-    private Condutor obterCondutorLogado(){
+    public Condutor obterCondutorLogado(){
         var usuarioLogado = RegistroCondutorService.getUsuarioLogado();
         Optional<Condutor> possivelCondutor = condutorRepository
                 .findFirstByLogin(usuarioLogado.getLogin());
