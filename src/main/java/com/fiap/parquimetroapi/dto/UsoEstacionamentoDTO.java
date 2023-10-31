@@ -3,10 +3,10 @@ package com.fiap.parquimetroapi.dto;
 import com.fiap.parquimetroapi.model.UsoEstacionamento;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.br.CNPJ;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.LocalDateTime;
 
 public record UsoEstacionamentoDTO (
@@ -23,7 +23,8 @@ public record UsoEstacionamentoDTO (
     @NotNull
     LocalDateTime inicio,
 
-    Duration duracao,
+    @Pattern(regexp = "[0-9]{2}:[0-9]{2}:[0-9]{2}")
+    String duracao,
 
     LocalDateTime fim,
 
@@ -40,7 +41,7 @@ public record UsoEstacionamentoDTO (
                 uso.getEstacionamento().getCnpj(),
                 uso.getTipoTempoEstacionado().toString(),
                 uso.getInicio(),
-                uso.getDuracaoEsperada(),
+                uso.getDuracaoEsperada().toString(),
                 uso.getFim(),
                 uso.getValorDevido(),
                 uso.getId()

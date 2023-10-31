@@ -69,7 +69,7 @@ class UsoEstacionamentoControllerTest {
         mongoTemplate.getDb().drop();
     }
 
-    @DisplayName("Testa registro válido de início de estacionamento cria recurso")
+    @DisplayName("Testa registro válido de início de estacionamento cria recurso - período variável")
     @Test
     public void testCenario1() throws Exception {
         // Arrange
@@ -239,6 +239,64 @@ class UsoEstacionamentoControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.mensagem",
                         Matchers.is("Necessário informar duração para tipoTempoEstacionado 'FIXO'")))
+        ;
+
+    }
+
+    @DisplayName("Testa registro válido de início de estacionamento cria recurso - período fixo")
+    @Test
+    public void testCenario7() throws Exception {
+        // Arrange
+        condutor.setFormaPagamento(FormaPagamento.PIX);
+        veiculoRepository.save(veiculo);
+        condutor.associa(veiculo);
+        condutorRepository.save(condutor);
+
+        // Act
+        this.mockMvc.perform(
+                        post(RAIZ_ENDPOINT + SUFIXO_ENDPOINT_INICIO_REGISTRO)
+                                .with(user(condutor.getUsuario()))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        "{\"placaVeiculo\": \"" + veiculo.getPlaca() +"\" ," +
+                                                "\"cnpjEstacionamento\": \"" + CNPJ_ESTACIONAMENTO +"\" ," +
+                                                "\"duracao\": \"03:15:00\" ," +
+                                                "\"tipoTempoEstacionado\": \"FIXO\" ," +
+                                                "\"inicio\": \"" + LocalDateTime.now() +"\"}"
+                                )
+                )
+                // Assert
+                .andExpect(status().isCreated())
+
+        ;
+
+    }
+
+    @DisplayName("Testa registro passando duração em formato inválido")
+    @Test
+    public void testCenario8() throws Exception {
+        // Arrange
+        condutor.setFormaPagamento(FormaPagamento.PIX);
+        veiculoRepository.save(veiculo);
+        condutor.associa(veiculo);
+        condutorRepository.save(condutor);
+
+        // Act
+        this.mockMvc.perform(
+                        post(RAIZ_ENDPOINT + SUFIXO_ENDPOINT_INICIO_REGISTRO)
+                                .with(user(condutor.getUsuario()))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        "{\"placaVeiculo\": \"" + veiculo.getPlaca() +"\" ," +
+                                                "\"cnpjEstacionamento\": \"" + CNPJ_ESTACIONAMENTO +"\" ," +
+                                                "\"duracao\": \"T03:15:00\" ," +
+                                                "\"tipoTempoEstacionado\": \"FIXO\" ," +
+                                                "\"inicio\": \"" + LocalDateTime.now() +"\"}"
+                                )
+                )
+                // Assert
+                .andExpect(status().isBadRequest())
+
         ;
 
     }
