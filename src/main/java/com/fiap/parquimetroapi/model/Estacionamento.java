@@ -1,7 +1,9 @@
 package com.fiap.parquimetroapi.model;
 
 
+import com.fiap.parquimetroapi.exception.EstacionamentoLotadoException;
 import com.fiap.parquimetroapi.exception.EstacionamentoSimultaneoException;
+import com.fiap.parquimetroapi.exception.VeiculoNaoEstacionadoException;
 import lombok.Getter;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.springframework.data.annotation.Id;
@@ -9,9 +11,8 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
+import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 @Document
@@ -23,49 +24,53 @@ public class Estacionamento {
     private String cnpj;
     private Long lotacaoMaxima;
     private BigDecimal valorHora;
+    private LocalDateTime criadoEm;
 
     @Transient
-    private Long lotacaoAtual;
+    private Long vagasDisponiveis;
 
     @Transient
-    private static final Map<String, Estacionamento> estacionamentos = new HashMap<>();
+    private final Set<Veiculo> veiculosEstacionados = new HashSet<>();
 
-    @Transient
-    private static final Set<Veiculo> idsVeiculosEstacionados = new HashSet<>();
-
-    private Estacionamento(String cnpj, Long lotacaoMaxima, BigDecimal valorHora){
+    public Estacionamento(String cnpj, Long lotacaoMaxima, BigDecimal valorHora){
+        this.setLotacaoMaxima(lotacaoMaxima);
         this.cnpj = cnpj;
-        this.lotacaoMaxima = lotacaoMaxima;
         this.valorHora = valorHora;
-    }
-
-    public static Estacionamento getInstance(String cnpj, Long lotacaoMaxima, BigDecimal valorHora){
-        Estacionamento estacionamento = estacionamentos.get(cnpj);
-        if (estacionamento != null) {
-            return estacionamento;
-        }
-        Estacionamento novoEstacionamento = new Estacionamento(cnpj, lotacaoMaxima, valorHora);
-        novoEstacionamento.setLotacaoAtual(novoEstacionamento.getLotacaoMaxima());
-        estacionamentos.put(cnpj, novoEstacionamento);
-        return novoEstacionamento;
+        this.vagasDisponiveis = this.lotacaoMaxima;
+        this.criadoEm = LocalDateTime.now();
 
     }
-
 
     public void estaciona(Veiculo veiculo) {
-        if (idsVeiculosEstacionados.contains(veiculo)) {
+        // Se for identificado que o veículo já está estacionado, lança exceção informando        
+        if (veiculosEstacionados.contains(veiculo)) {
             throw new EstacionamentoSimultaneoException(
                     "Existe registro de estacionamento em andamento para o veículo de placa '" +
                             veiculo.getPlaca() + "'");
         }
-        idsVeiculosEstacionados.add(veiculo);
-        this.lotacaoAtual -= 1L;
+        
+        // Se capacidade máxima tiver sido alcançada, lança exceção informando
+        if (vagasDisponiveis == 0L) {
+            throw new EstacionamentoLotadoException("Estacionamento de CNPJ '" + cnpj + "' lotado");
+        }
+
+        veiculosEstacionados.add(veiculo);
+        this.vagasDisponiveis -= 1L;
     }
 
-    private void setLotacaoAtual(Long lotacaoAtual){
-        if (lotacaoAtual < 0) {
+    private void setLotacaoMaxima(Long lotacaoMaxima){
+        if (lotacaoMaxima <= 0) {
             throw new IllegalArgumentException("Não é possível criar estacionamento com lotação não positiva");
         }
-        this.lotacaoAtual = lotacaoAtual;
+        this.lotacaoMaxima = lotacaoMaxima;
     }
+
+    public void libera(Veiculo veiculo) {
+        if (!veiculosEstacionados.contains(veiculo)) {
+            throw new VeiculoNaoEstacionadoException("Não é possível liberar vaga para veículo não estacionado");
+        }
+        veiculosEstacionados.remove(veiculo);
+        this.vagasDisponiveis += 1L;
+    }
+
 }
