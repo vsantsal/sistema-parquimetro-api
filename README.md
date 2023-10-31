@@ -26,7 +26,11 @@ O link no Github é https://github.com/vsantsal/sistema-parquimetro-api.
 
 # 🔬 Escopo
 
-As principais funcionalidades disponibilizadas pelo sistema são:
+O protótipo do sistema ora apresentado é feito sob a ótica dos usuários que exercem o papel de *condutor* na aplicação.
+
+Reconhece-se haver outros casos de usos envolvendo outros papéis no domínio do sistema (por exemplo, *proprietários de estacionamento*, *administradores de sistema* etc.), porém serão abstraídos na presente implementação. 
+
+Assim, as principais funcionalidades disponibilizadas pelo sistema são:
 
 - Autenticar Usuário
 - Manter Condutor
@@ -51,6 +55,8 @@ Não pretendemos sobrecarregar os leitores com uma especificação rígida e pes
 **Manter Veículo**: um condutor pode visualizar os veículos associados a sua conta na API, além registrar ou excluir. Um condutor pode vincular vários veículos à sua conta. Na versão inicial do programa, cada veículo somente poderá estar associado a um condutor por vez.
 
 **Manter Forma de Pagamento**: um condutor pode cadastrar, visualizar e alterar sua forma de pagamento preferida na API, que pode incluir cartao de credito, debito ou PIX (o ultimo apenas pode ser utilizado para pagamento de tempo estacionado fixo).
+
+**Iniciar período de estacionamento**: um condutor com forma de pagamento registrada pode iniciar o registro de tempo no sistema, informando veículo a estacionar, estacionamento e escolhendo entre tempo fixo (com duração desejada) ou por hora.
 
 # 📖 Funcionalidades
 
