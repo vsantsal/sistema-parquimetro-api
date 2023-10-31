@@ -36,7 +36,7 @@ class UsoEstacionamentoControllerTest {
     private final String CNPJ_ESTACIONAMENTO = "71146289000108";
 
     private final String RAIZ_ENDPOINT = "/estacionamentos";
-    private final String SUFIXO_ENDPOINT_INICIO_REGISTRO = "/iniciar-registro";
+    private final String SUFIXO_ENDPOINT_INICIO_REGISTRO = "/usar";
 
     @Autowired
     private MockMvc mockMvc;
@@ -148,6 +148,8 @@ class UsoEstacionamentoControllerTest {
                 )
                 // Assert
                 .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.mensagem",
+                        Matchers.is("Período de estacionamento inválido para forma de pagamento")))
 
         ;
 
@@ -296,6 +298,10 @@ class UsoEstacionamentoControllerTest {
                 )
                 // Assert
                 .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$[0].campo",
+                        Matchers.is("duracao")))
+                .andExpect(jsonPath("$[0].mensagem",
+                        Matchers.is("Formato deve ser 'HH:MM:SS'")))
 
         ;
 

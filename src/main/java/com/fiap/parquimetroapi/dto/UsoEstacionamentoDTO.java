@@ -23,7 +23,7 @@ public record UsoEstacionamentoDTO (
     @NotNull
     LocalDateTime inicio,
 
-    @Pattern(regexp = "[0-9]{2}:[0-9]{2}:[0-9]{2}")
+    @Pattern(regexp = "[0-9]{2}:[0-9]{2}:[0-9]{2}", message = "Formato deve ser 'HH:MM:SS'")
     String duracao,
 
     LocalDateTime fim,

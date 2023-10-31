@@ -17,7 +17,7 @@ public class UsoEstacionamentoController {
     @Autowired
     private UsoEstacionamentoService usoEstacionamentoService;
 
-    @PostMapping("/iniciar-registro")
+    @PostMapping("/usar")
     public ResponseEntity<UsoEstacionamentoDTO> iniciar(
             @RequestBody @Valid UsoEstacionamentoDTO dto,
             UriComponentsBuilder uriComponentsBuilder
