@@ -43,14 +43,11 @@ public class UsoEstacionamento {
     @Transient
     private Long SEGUNDOS_FALTANTES_PARA_ALERTA = 600L;
 
-    @Transient
-    private LocalDateTime inicioVirtual;
-
     public void monitora(LocalDateTime dataHora){
         this.ajustaDuracao();
         // lida com alertas
         Duration tempoDecorrido = Duration.between(
-                inicioVirtual,
+                inicio,
                 dataHora
         );
         if (alertasEmitidos == null) {
@@ -64,27 +61,24 @@ public class UsoEstacionamento {
         // Atualiza dados
         this.setDuracaoEfetiva(tempoDecorrido);
 
-        // Encerra
+        // Encerra se FIXO e tempo decorrido igual ou maior que esperado
         if (tipoTempoEstacionado.equals(TipoTempoEstacionado.FIXO) &&
                 tempoDecorrido.getSeconds() >= duracaoEsperada.getSeconds()){
             this.setFim(this.getInicio().plus(duracaoEsperada));
         }
 
+        // Amplia se VARIAVEL e tempo decorrido igual ou maior que esperado
+        if (tipoTempoEstacionado.equals(TipoTempoEstacionado.VARIAVEL) &&
+                tempoDecorrido.getSeconds() >= duracaoEsperada.getSeconds()) {
+            this.setDuracaoEsperada(this.duracaoEsperada.plusHours(1));
+        }
+
     }
 
     private void ajustaDuracao(){
-        if (inicioVirtual == null) {
-            inicioVirtual = inicio;
-        }
         if (tipoTempoEstacionado.equals(TipoTempoEstacionado.VARIAVEL)) {
             duracaoEsperada = Duration.ofHours(1L);
         }
-    }
-
-    public void setInicio(LocalDateTime inicio){
-        this.inicio = inicio;
-        this.inicioVirtual = inicio;
-
     }
 
 }

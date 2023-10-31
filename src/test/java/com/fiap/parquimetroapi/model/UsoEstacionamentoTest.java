@@ -122,4 +122,30 @@ class UsoEstacionamentoTest {
         );
     }
 
+    @DisplayName("Teste monitoramento deve ampliar uso de estacionamento ao decorrer uma hora de tempo variável")
+    @Test
+    public void testCenario6() {
+        // Arrange
+        usoEstacionamento.setTipoTempoEstacionado(TipoTempoEstacionado.VARIAVEL);
+        LocalDateTime dataHoraAmpliacao = LocalDateTime
+                .of(2023, 10, 1, 11, 30, 15);
+
+        // Act
+        usoEstacionamento.monitora(dataHoraAmpliacao);
+
+        // Assert
+        assertEquals(
+                TipoTempoEstacionado.VARIAVEL.getAlerta(),
+                usoEstacionamento.getAlertasEmitidos().get(0)
+        );
+        assertNull(usoEstacionamento.getFim());
+        assertEquals(
+                Duration.ofHours(1),
+                usoEstacionamento.getDuracaoEfetiva());
+        assertEquals(
+                Duration.ofHours(2),
+                usoEstacionamento.getDuracaoEsperada());
+
+    }
+
 }
