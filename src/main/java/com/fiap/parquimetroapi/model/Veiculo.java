@@ -42,7 +42,6 @@ public class Veiculo {
         this.ativo = true;
     }
 
-    @Deprecated
     public Veiculo(){
 
     }
@@ -57,4 +56,18 @@ public class Veiculo {
         this.atualizadoEm = LocalDateTime.now();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Veiculo veiculo = (Veiculo) o;
+
+        return placa.equals(veiculo.placa);
+    }
+
+    @Override
+    public int hashCode() {
+        return placa.hashCode();
+    }
 }
