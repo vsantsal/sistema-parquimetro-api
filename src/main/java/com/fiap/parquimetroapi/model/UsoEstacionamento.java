@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Document
@@ -29,5 +30,9 @@ public class UsoEstacionamento {
     private boolean pago;
 
     private TipoTempoEstacionado tipoTempoEstacionado;
+
+    private Duration duracaoEfetiva;
+
+    private Duration duracaoEsperada;
 
 }

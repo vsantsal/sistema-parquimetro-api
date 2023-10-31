@@ -73,7 +73,7 @@ class UsoEstacionamentoControllerTest {
     @Test
     public void testCenario1() throws Exception {
         // Arrange
-        condutor.setFormaPagamento(FormaPagamento.PIX);
+        condutor.setFormaPagamento(FormaPagamento.CARTAO_DE_CREDITO);
         veiculoRepository.save(veiculo);
         condutor.associa(veiculo);
         condutorRepository.save(condutor);
@@ -86,7 +86,7 @@ class UsoEstacionamentoControllerTest {
                                 .content(
                                         "{\"placaVeiculo\": \"" + veiculo.getPlaca() +"\" ," +
                                         "\"cnpjEstacionamento\": \"" + CNPJ_ESTACIONAMENTO +"\" ," +
-                                                "\"tipoTempoEstacionado\": \"FIXO\" ," +
+                                                "\"tipoTempoEstacionado\": \"VARIAVEL\" ," +
                                                 "\"inicio\": \"" + LocalDateTime.now() +"\"}"
                                 )
                 )
@@ -188,8 +188,39 @@ class UsoEstacionamentoControllerTest {
     @Test
     public void testCenario5() throws Exception {
         // Arrange
+        condutor.setFormaPagamento(FormaPagamento.DEBITO);
+        veiculoRepository.save(veiculo);
+        condutorRepository.save(condutor);
+
+        // Act
+        this.mockMvc.perform(
+                        post(RAIZ_ENDPOINT + SUFIXO_ENDPOINT_INICIO_REGISTRO)
+                                .with(user(condutor.getUsuario()))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        "{\"placaVeiculo\": \"" + veiculo.getPlaca() +"\" ," +
+                                                "\"cnpjEstacionamento\": \"" + CNPJ_ESTACIONAMENTO +"\" ," +
+                                                "\"tipoTempoEstacionado\": \"VARIAVEL\" ," +
+                                                "\"inicio\": \"" + LocalDateTime.now() +"\"}"
+                                )
+                )
+                // Assert
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.mensagem",
+                        Matchers.is(
+                                "Não foi possível localizar o veículo correspondente à placa '" +
+                                veiculo.getPlaca() + "'")))
+        ;
+
+    }
+
+    @DisplayName("Testa não é possível selecionar período fixo sem informar duração")
+    @Test
+    public void testCenario6() throws Exception {
+        // Arrange
         condutor.setFormaPagamento(FormaPagamento.PIX);
         veiculoRepository.save(veiculo);
+        condutor.associa(veiculo);
         condutorRepository.save(condutor);
 
         // Act
@@ -207,9 +238,7 @@ class UsoEstacionamentoControllerTest {
                 // Assert
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.mensagem",
-                        Matchers.is(
-                                "Não foi possível localizar o veículo correspondente à placa '" +
-                                veiculo.getPlaca() + "'")))
+                        Matchers.is("Necessário informar duração para tipoTempoEstacionado 'FIXO'")))
         ;
 
     }

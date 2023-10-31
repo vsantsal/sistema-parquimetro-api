@@ -50,6 +50,12 @@ public class UsoEstacionamentoService {
             throw new TipoTempoEstacionadoInvalido("Período de estacionamento inválido para forma de pagamento");
         }
 
+        // Se tipo tempo estacionado fixo, verificar se duração foi informada
+        if (tipo == TipoTempoEstacionado.FIXO && dto.duracao() == null) {
+            throw new TipoTempoEstacionadoInvalido("Necessário informar duração para tipoTempoEstacionado 'FIXO'");
+        }
+
+        // Obtém veículo a partir de placa informada, validando se está associado ao condutor logado
         var veiculo = condutorLogado
                 .getVeiculos()
                 .stream()

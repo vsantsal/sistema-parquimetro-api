@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.br.CNPJ;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 public record UsoEstacionamentoDTO (
@@ -22,6 +23,8 @@ public record UsoEstacionamentoDTO (
     @NotNull
     LocalDateTime inicio,
 
+    Duration duracao,
+
     LocalDateTime fim,
 
     BigDecimal total,
@@ -37,6 +40,7 @@ public record UsoEstacionamentoDTO (
                 uso.getEstacionamento().getCnpj(),
                 uso.getTipoTempoEstacionado().toString(),
                 uso.getInicio(),
+                uso.getDuracaoEsperada(),
                 uso.getFim(),
                 uso.getValorDevido(),
                 uso.getId()
