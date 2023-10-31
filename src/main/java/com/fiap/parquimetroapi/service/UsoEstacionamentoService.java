@@ -2,6 +2,7 @@ package com.fiap.parquimetroapi.service;
 
 import com.fiap.parquimetroapi.dto.UsoEstacionamentoDTO;
 import com.fiap.parquimetroapi.exception.FormaPagamentoAusenteException;
+import com.fiap.parquimetroapi.exception.TipoTempoEstacionadoInvalido;
 import com.fiap.parquimetroapi.model.Estacionamento;
 import com.fiap.parquimetroapi.model.TipoTempoEstacionado;
 import com.fiap.parquimetroapi.model.UsoEstacionamento;
@@ -39,6 +40,12 @@ public class UsoEstacionamentoService {
         // Se não houver definido ainda forma de pagamento, lança exceção
         if (condutorLogado.getFormaPagamento() == null) {
             throw new FormaPagamentoAusenteException("É necessário selecionar forma de pagamento válida antes de estacionar");
+        }
+
+        // Se tipo tempo estacionado incoerente com forma de pagamento selecionada, lança exceção
+        TipoTempoEstacionado tipo = TipoTempoEstacionado.valueOf(dto.tipoTempoEstacionado());
+        if (!condutorLogado.getFormaPagamento().getTiposAceitosTempoEstacionado().contains(tipo)){
+            throw new TipoTempoEstacionadoInvalido("Período de estacionamento inválido para forma de pagamento");
         }
 
         var veiculo = condutorLogado

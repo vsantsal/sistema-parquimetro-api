@@ -121,4 +121,32 @@ class UsoEstacionamentoControllerTest {
 
     }
 
+    @DisplayName("Testa não é possível estacionar para tipo período inválido na forma de pagamento")
+    @Test
+    public void testCenario3() throws Exception {
+        // Arrange
+        condutor.setFormaPagamento(FormaPagamento.PIX);
+        veiculoRepository.save(veiculo);
+        condutor.associa(veiculo);
+        condutorRepository.save(condutor);
+
+        // Act
+        this.mockMvc.perform(
+                        post(RAIZ_ENDPOINT + SUFIXO_ENDPOINT_INICIO_REGISTRO)
+                                .with(user(condutor.getUsuario()))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        "{\"idVeiculo\": \"" + veiculo.getId() +"\" ," +
+                                                "\"cnpjEstacionamento\": \"" + CNPJ_ESTACIONAMENTO +"\" ," +
+                                                "\"tipoTempoEstacionado\": \"VARIAVEL\" ," +
+                                                "\"inicio\": \"" + LocalDateTime.now() +"\"}"
+                                )
+                )
+                // Assert
+                .andExpect(status().isBadRequest())
+
+        ;
+
+    }
+
 }
