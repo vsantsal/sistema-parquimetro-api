@@ -54,9 +54,9 @@ Não pretendemos sobrecarregar os leitores com uma especificação rígida e pes
 
 **Manter Veículo**: um condutor pode visualizar os veículos associados a sua conta na API, além registrar ou excluir. Um condutor pode vincular vários veículos à sua conta. Na versão inicial do programa, cada veículo somente poderá estar associado a um condutor por vez.
 
-**Manter Forma de Pagamento**: um condutor pode cadastrar, visualizar e alterar sua forma de pagamento preferida na API, que pode incluir cartao de credito, debito ou PIX (o ultimo apenas pode ser utilizado para pagamento de tempo estacionado fixo).
-
 **Iniciar período de estacionamento**: um condutor com forma de pagamento registrada pode iniciar o registro de tempo no sistema, informando veículo a estacionar e estacionamento, além de escolher entre tempo fixo (com duração desejada) ou por hora.
+
+**Controlar Tempo Estacionado** \ **Alertar Tempo Estacionado**: esses casos de uso são percebidos pelos condutores ao consultarem o endpoint adequado da API, que retornará o tempo decorrido e eventuais alertas emitidos. Para horários fixos, o sistema emite alerta faltando 10 minutos para expiração. Para horários variáveis, o sistema emite alerta (no mesmo marco anterior, considerando como fim uma hora após o início do registro) informando que estenderá o estacionamento por mais uma hora caso não seja encerrado o período.
 
 # 📖 Funcionalidades
 
