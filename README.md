@@ -16,7 +16,6 @@ Api para sistema de parquímetro
 
 
 ![example workflow](https://github.com/vsantsal/sistema-parquimetro-api/actions/workflows/maven.yml/badge.svg)
-![Coverage](.github/badges/jacoco.svg)
 
 Sistema de parquímetro para atender a demanda de estacionamento crescente de cidade turística.
 
@@ -234,6 +233,76 @@ Para o DELETE, deve-se passar o id do veículo a remover no endpoint (por exempl
 A aplicação marcará internamente o identificador `ativo` como false do modelo e retornará o STATUS CODE 204.
 Assim como nos demais verbos, o usuário logado somente poderá inativar veículos associados a sua conta.
 
+## Iniciar período de estacionamento
+
+Nossa API Rest deve suportar a manutenção de veículos pelos condutores, a partir de método POST.
+
+O enpdpoint será baseado em `/estacionamentos/usar`.
+
+Para o POST, o *body* de cada requisição deve informar JSON no seguinte formato, em caso de solicitação para período variável a estacionar.
+
+```json
+{
+  "placaVeiculo": "ABC1234",
+  "cnpjEstacionamento": "71146289000108",
+  "tipoTempoEstacionado": "VARIAVEL",
+  "inicio": "2023-10-01T11:05:42"
+}
+```
+
+Para período fixo, deve haver inclusao do campo duracao, com valor no formato HH:MM:SS
+
+```json
+{
+  "placaVeiculo": "ABC1234",
+  "cnpjEstacionamento": "71146289000108",
+  "tipoTempoEstacionado": "FIXO",
+  "inicio": "2023-10-01T11:05:42",
+  "duracao": "01:00:00"
+}
+```
+
+Para ambas solicitações, em caso de sucesso, é retornado status 201, com localização do recurso criado.
+
+Conforme regras de negócio, caso haja incompatibilidade entre forma de pagamento preferida do condutor e tipo de período (fixo/variável), a aplicaçao retorna o erro abaixo:
+
+````json
+{
+  "mensagem": "Período de estacionamento inválido para forma de pagamento"
+}
+````
+
+Se condutor solicitar uso de estacionamento com tempo fixo sem informar duração, a aplicação critica conforme abaixo:
+
+```json
+{
+  "mensagem": "Necessário informar duração para tipoTempoEstacionado 'FIXO'"
+}
+```
+
+Igualmente, caso condutor tente iniciar um período de estacionamento antes de selecionar uma forma de pagamento na aplicação, também é lançado erro.
+
+```json
+{
+  "mensagem": "É necessário selecionar forma de pagamento válida antes de estacionar"
+}
+```
+Caso seja informado uma forma inválida de tipo de tempo estacionado (por exemplo, `INVALIDO`), também há tratamento para a situação.
+
+```json
+{
+  "mensagem": "Valor 'INVALIDO' inválido para 'tipoTempoEstacionado'"
+}
+```
+
+Se condutor tentar estacionar veículo inexistente ou não associado à sua conta (por exemplo, placa `XYZ1A23`), é informado o erro abaixo:
+
+```json
+{
+  "mensagem": "Não foi possível localizar o veículo correspondente à placa 'XYZ1A23'"
+}
+```
+
 # 🥼 Testes e CI/CD
 
 Há testes de integração para os controllers de modo a confirmar os principais comportamentos.
@@ -261,4 +330,9 @@ Interrompe-se o contêiner por meio do comando:
 * Em https://docs.github.com/en/actions/learn-github-actions/variables, visualizamos como informar variáveis de ambiente para serem usadas em execuções de testes no `Github Actions`;
 * Implementação de métrica de cobertura de código pelos testes, com habilitação do *github-actions bot* para gerar *badge*;
 * Em https://spring.io/blog/2021/11/29/spring-data-mongodb-relation-modelling, visualizamos como implementar o relacionamento modelado entre condutores e veículos;
-* * Incluímos `Dockerfile` e `docker-compose.yml` para disponibilizar imagem de modo a facilitar explorações manuais que se deseje fazer da aplicação.
+* Incluímos `Dockerfile` e `docker-compose.yml` para disponibilizar imagem de modo a facilitar explorações manuais que se deseje fazer da aplicação.
+
+## ⚠️ Pontos de atenção
+
+* Aumentar cobertura de código pelos testes
+* Criar aplicação para automação de rotinas por usuários de serviço (controle e alerta de tempo estacionado)

@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 
 @Service
@@ -50,6 +53,12 @@ public class UsoEstacionamentoService {
             throw new TipoTempoEstacionadoInvalido("Período de estacionamento inválido para forma de pagamento");
         }
 
+        // Se tipo tempo estacionado fixo, verificar se duração foi informada
+        if (tipo == TipoTempoEstacionado.FIXO && dto.duracao() == null) {
+            throw new TipoTempoEstacionadoInvalido("Necessário informar duração para tipoTempoEstacionado 'FIXO'");
+        }
+
+        // Obtém veículo a partir de placa informada, validando se está associado ao condutor logado
         var veiculo = condutorLogado
                 .getVeiculos()
                 .stream()
@@ -69,6 +78,20 @@ public class UsoEstacionamentoService {
                 100L,
                 new BigDecimal("9.99")));
 
+        // durações iniciais
+        Duration duracaoRealizada = Duration.between(
+                dto.inicio(), LocalDateTime.now()
+        );
+        Duration duracaoEsperada;
+        if (dto.duracao() == null){
+            duracaoEsperada = duracaoRealizada;
+        } else {
+            duracaoEsperada = Duration.between(
+                    LocalTime.MIN,
+                    LocalTime.parse(dto.duracao())
+            );
+        }
+
         // preenche campos para registro do inicio do estacionamento
         var uso = new UsoEstacionamento();
         uso.setCondutor(condutorLogado);
@@ -76,6 +99,8 @@ public class UsoEstacionamentoService {
         uso.setEstacionamento(estacionamento);
         uso.setInicio(dto.inicio());
         uso.setTipoTempoEstacionado(TipoTempoEstacionado.valueOf(dto.tipoTempoEstacionado()));
+        uso.setDuracaoEfetiva(duracaoRealizada);
+        uso.setDuracaoEsperada(duracaoEsperada);
         uso.setPago(false);
 
         usoEstacionamentoRepository.save(uso);
