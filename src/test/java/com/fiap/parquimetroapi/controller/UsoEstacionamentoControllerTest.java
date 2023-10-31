@@ -84,7 +84,7 @@ class UsoEstacionamentoControllerTest {
                                 .with(user(condutor.getUsuario()))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(
-                                        "{\"idVeiculo\": \"" + veiculo.getId() +"\" ," +
+                                        "{\"placaVeiculo\": \"" + veiculo.getPlaca() +"\" ," +
                                         "\"cnpjEstacionamento\": \"" + CNPJ_ESTACIONAMENTO +"\" ," +
                                                 "\"tipoTempoEstacionado\": \"FIXO\" ," +
                                                 "\"inicio\": \"" + LocalDateTime.now() +"\"}"
@@ -111,7 +111,7 @@ class UsoEstacionamentoControllerTest {
                                 .with(user(condutor.getUsuario()))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(
-                                        "{\"idVeiculo\": \"" + veiculo.getId() +"\" ," +
+                                        "{\"placaVeiculo\": \"" + veiculo.getPlaca() +"\" ," +
                                                 "\"cnpjEstacionamento\": \"" + CNPJ_ESTACIONAMENTO +"\" ," +
                                                 "\"tipoTempoEstacionado\": \"VARIAVEL\" ," +
                                                 "\"inicio\": \"" + LocalDateTime.now() +"\"}"
@@ -140,7 +140,7 @@ class UsoEstacionamentoControllerTest {
                                 .with(user(condutor.getUsuario()))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(
-                                        "{\"idVeiculo\": \"" + veiculo.getId() +"\" ," +
+                                        "{\"placaVeiculo\": \"" + veiculo.getPlaca() +"\" ," +
                                                 "\"cnpjEstacionamento\": \"" + CNPJ_ESTACIONAMENTO +"\" ," +
                                                 "\"tipoTempoEstacionado\": \"VARIAVEL\" ," +
                                                 "\"inicio\": \"" + LocalDateTime.now() +"\"}"
@@ -168,7 +168,7 @@ class UsoEstacionamentoControllerTest {
                                 .with(user(condutor.getUsuario()))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(
-                                        "{\"idVeiculo\": \"" + veiculo.getId() +"\" ," +
+                                        "{\"placaVeiculo\": \"" + veiculo.getPlaca() +"\" ," +
                                                 "\"cnpjEstacionamento\": \"" + CNPJ_ESTACIONAMENTO +"\" ," +
                                                 "\"tipoTempoEstacionado\": \"INEXISTENTE\" ," +
                                                 "\"inicio\": \"" + LocalDateTime.now() +"\"}"
@@ -198,7 +198,7 @@ class UsoEstacionamentoControllerTest {
                                 .with(user(condutor.getUsuario()))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(
-                                        "{\"idVeiculo\": \"" + veiculo.getId() +"\" ," +
+                                        "{\"placaVeiculo\": \"" + veiculo.getPlaca() +"\" ," +
                                                 "\"cnpjEstacionamento\": \"" + CNPJ_ESTACIONAMENTO +"\" ," +
                                                 "\"tipoTempoEstacionado\": \"FIXO\" ," +
                                                 "\"inicio\": \"" + LocalDateTime.now() +"\"}"
@@ -208,8 +208,8 @@ class UsoEstacionamentoControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.mensagem",
                         Matchers.is(
-                                "Não foi possível localizar o veículo correspondente ao id '" +
-                                veiculo.getId() + "'")))
+                                "Não foi possível localizar o veículo correspondente à placa '" +
+                                veiculo.getPlaca() + "'")))
         ;
 
     }

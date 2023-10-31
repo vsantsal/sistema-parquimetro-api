@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 public record UsoEstacionamentoDTO (
     @NotBlank
-    String idVeiculo,
+    String placaVeiculo,
 
     @NotBlank
     @CNPJ
@@ -33,7 +33,7 @@ public record UsoEstacionamentoDTO (
 
     public UsoEstacionamentoDTO(UsoEstacionamento uso) {
         this(
-                uso.getVeiculo().getId(),
+                uso.getVeiculo().getPlaca().toString(),
                 uso.getEstacionamento().getCnpj(),
                 uso.getTipoTempoEstacionado().toString(),
                 uso.getInicio(),

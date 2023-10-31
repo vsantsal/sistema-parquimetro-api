@@ -53,11 +53,11 @@ public class UsoEstacionamentoService {
         var veiculo = condutorLogado
                 .getVeiculos()
                 .stream()
-                .filter(v -> dto.idVeiculo().equals(v.getId()))
+                .filter(v -> dto.placaVeiculo().equals(v.getPlaca().toString()))
                 .findFirst().orElseThrow(
                         () -> new VeiculoInexistenteException(
-                                "Não foi possível localizar o veículo correspondente ao id '" +
-                                        dto.idVeiculo() + "'"
+                                "Não foi possível localizar o veículo correspondente à placa '" +
+                                        dto.placaVeiculo() + "'"
                         )
                 );
 
