@@ -43,7 +43,8 @@ public class UsoEstacionamentoService {
         }
 
         // Se tipo tempo estacionado incoerente com forma de pagamento selecionada, lança exceção
-        TipoTempoEstacionado tipo = TipoTempoEstacionado.valueOf(dto.tipoTempoEstacionado());
+        TipoTempoEstacionado tipo = EnumValidadorService.recupera(
+                TipoTempoEstacionado.class, dto.tipoTempoEstacionado(), "tipoTempoEstacionado");
         if (!condutorLogado.getFormaPagamento().getTiposAceitosTempoEstacionado().contains(tipo)){
             throw new TipoTempoEstacionadoInvalido("Período de estacionamento inválido para forma de pagamento");
         }

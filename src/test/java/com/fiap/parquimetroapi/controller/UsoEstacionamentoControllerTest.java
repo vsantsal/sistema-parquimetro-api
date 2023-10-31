@@ -4,6 +4,7 @@ import com.fiap.parquimetroapi.dto.CondutorDTO;
 import com.fiap.parquimetroapi.model.*;
 import com.fiap.parquimetroapi.repository.CondutorRepository;
 import com.fiap.parquimetroapi.repository.VeiculoRepository;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
@@ -144,6 +146,37 @@ class UsoEstacionamentoControllerTest {
                 )
                 // Assert
                 .andExpect(status().isBadRequest())
+
+        ;
+
+    }
+
+    @DisplayName("Testa não é possível estacionar para tipo período inexistente")
+    @Test
+    public void testCenario4() throws Exception {
+        // Arrange
+        condutor.setFormaPagamento(FormaPagamento.PIX);
+        veiculoRepository.save(veiculo);
+        condutor.associa(veiculo);
+        condutorRepository.save(condutor);
+
+        // Act
+        this.mockMvc.perform(
+                        post(RAIZ_ENDPOINT + SUFIXO_ENDPOINT_INICIO_REGISTRO)
+                                .with(user(condutor.getUsuario()))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        "{\"idVeiculo\": \"" + veiculo.getId() +"\" ," +
+                                                "\"cnpjEstacionamento\": \"" + CNPJ_ESTACIONAMENTO +"\" ," +
+                                                "\"tipoTempoEstacionado\": \"INEXISTENTE\" ," +
+                                                "\"inicio\": \"" + LocalDateTime.now() +"\"}"
+                                )
+                )
+                // Assert
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.mensagem",
+                        Matchers.is("Valor 'INEXISTENTE' inválido para 'tipoTempoEstacionado'")))
+
 
         ;
 
