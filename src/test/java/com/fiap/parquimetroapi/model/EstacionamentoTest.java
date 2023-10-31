@@ -9,6 +9,10 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/*
+* CNPJs de teste gerados em https://www.4devs.com.br/gerador_de_cnpj
+* */
+
 class EstacionamentoTest {
 
     private Estacionamento sut;
@@ -17,7 +21,7 @@ class EstacionamentoTest {
 
     @BeforeEach
     public void setSut(){
-        this.sut = Estacionamento.getInstance("sut", 100L, BigDecimal.TEN);
+        this.sut = Estacionamento.getInstance("71146289000108", 100L, BigDecimal.TEN);
         this.veiculo = new Veiculo(Placa.criar("ABC1234"));
 
     }
@@ -30,7 +34,7 @@ class EstacionamentoTest {
 
         // Act
         Estacionamento outroEstacionamento = Estacionamento.getInstance(
-                "sut", 101L, BigDecimal.ONE
+                "71146289000108", 101L, BigDecimal.ONE
         );
 
         // Assert
@@ -78,6 +82,21 @@ class EstacionamentoTest {
                 () -> this.sut.estaciona(veiculo)
         );
 
+
+    }
+
+    @DisplayName("Teste não é possível instanciar estacionamento com lotação máxima negativa")
+    @Test
+    public void testCenario4(){
+
+
+        // Act
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> Estacionamento.getInstance(
+                        "60365912000199", -1L, BigDecimal.ONE
+                )
+        );
 
     }
 

@@ -63,6 +63,9 @@ public class Estacionamento {
     }
 
     private void setLotacaoAtual(Long lotacaoAtual){
+        if (lotacaoAtual < 0) {
+            throw new IllegalArgumentException("Não é possível criar estacionamento com lotação não positiva");
+        }
         this.lotacaoAtual = lotacaoAtual;
     }
 }
