@@ -10,16 +10,33 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @RestControllerAdvice
 public class TratadorDeErros {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity tratarErro400(MethodArgumentNotValidException exception) {
         var erros = exception.getFieldErrors();
-        return ResponseEntity.badRequest().body(
-                erros.stream().map(DadosErrosValidacao::new).toList()
-        );
+        List<DadosErrosValidacao> camposComErro = new ArrayList<>();
+        for (FieldError erro: erros) {
+            var camposComErroTratados = Arrays.stream(
+                    erro.getField().split("[.]")).toList();
+            if (camposComErroTratados.size() > 1) {
+                camposComErro.add(
+                        new DadosErrosValidacao(camposComErroTratados.get(1),
+                                erro.getDefaultMessage()));
+            } else {
+                camposComErro.add(
+                        new DadosErrosValidacao(erro.getField(),
+                                erro.getDefaultMessage()));
+            }
+        }
+
+        return ResponseEntity.badRequest().body(camposComErro);
+
+
     }
 
     @ExceptionHandler({
@@ -58,11 +75,6 @@ public class TratadorDeErros {
     }
 
     private record DadosErrosValidacao(String campo, String mensagem) {
-        public DadosErrosValidacao(FieldError erro) {
-
-            this(Arrays.stream(erro.getField().split("[.]")).toList().get(1),
-                    erro.getDefaultMessage());
-        }
     }
 
     private record ErroSoComMensagemValidacao(String mensagem){ }
