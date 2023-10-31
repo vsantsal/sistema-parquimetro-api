@@ -1,6 +1,5 @@
 package com.fiap.parquimetroapi.model;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,15 +10,13 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 public class Usuario implements UserDetails {
     private String login;
     private String senha;
-    @Setter @Getter
     private LocalDateTime criadoEm;
-    @Setter @Getter
     private LocalDateTime atualizadoEm;
-    @Setter @Getter
     private boolean ativo;
 
     public Usuario(String login, String senha) {
