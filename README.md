@@ -16,6 +16,7 @@ Api para sistema de parquímetro
 
 
 ![example workflow](https://github.com/vsantsal/sistema-parquimetro-api/actions/workflows/maven.yml/badge.svg)
+![Coverage](.github/badges/jacoco.svg)
 
 Sistema de parquímetro para atender a demanda de estacionamento crescente de cidade turística.
 
@@ -53,9 +54,9 @@ Não pretendemos sobrecarregar os leitores com uma especificação rígida e pes
 
 **Manter Veículo**: um condutor pode visualizar os veículos associados a sua conta na API, além registrar ou excluir. Um condutor pode vincular vários veículos à sua conta. Na versão inicial do programa, cada veículo somente poderá estar associado a um condutor por vez.
 
-**Manter Forma de Pagamento**: um condutor pode cadastrar, visualizar e alterar sua forma de pagamento preferida na API, que pode incluir cartao de credito, debito ou PIX (o ultimo apenas pode ser utilizado para pagamento de tempo estacionado fixo).
-
 **Iniciar período de estacionamento**: um condutor com forma de pagamento registrada pode iniciar o registro de tempo no sistema, informando veículo a estacionar e estacionamento, além de escolher entre tempo fixo (com duração desejada) ou por hora.
+
+**Controlar Tempo Estacionado** \ **Alertar Tempo Estacionado**: esses casos de uso são percebidos pelos condutores ao consultarem o endpoint adequado da API, que retornará o tempo decorrido e eventuais alertas emitidos. Para horários fixos, o sistema emite alerta faltando 10 minutos para expiração. Para horários variáveis, o sistema emite alerta (no mesmo marco anterior, considerando como fim uma hora após o início do registro) informando que estenderá o estacionamento por mais uma hora caso não seja encerrado o período.
 
 # 📖 Funcionalidades
 
@@ -303,6 +304,64 @@ Se condutor tentar estacionar veículo inexistente ou não associado à sua cont
 }
 ```
 
+## Controlar Tempo Estacionado \ Alertar Tempo Estacionado
+
+Os dois casos de uso são observados pelos condutores através do método GET *endpoint* `/estacionamentos/usar`, com ou sem passagem de `id` (naturalmente, o segundo caso também ao receberem e-mail\notificação no app).
+
+Especialmente considerando os períodos de grande demanda, e a expectativa de, para cada condutor logado, haver um histórico razoável de usos de estacionamento, adota-se estratégia de paginação para apresentá-lo aos condutores. 
+
+O retorno paginado acontece conforme exemplo abaixo:
+
+```json
+{
+    "content": [
+        {
+            "placaVeiculo": "ABC1234",
+            "cnpjEstacionamento": "71146289000108",
+            "tipoTempoEstacionado": "VARIAVEL",
+            "inicio": "2023-10-31T14:36:00",
+            "duracaoDecorrida": "PT3H18M32.115785725S",
+            "duracaoLimite": "PT4H",
+            "fim": null,
+            "total": null,
+            "alertas": [
+                "Tempo de estacionamento prestes a expirar. Estacionamento será estendido automaticamente caso não seja encerrado.",
+                "Tempo de estacionamento prestes a expirar. Estacionamento será estendido automaticamente caso não seja encerrado.",
+                "Tempo de estacionamento prestes a expirar. Estacionamento será estendido automaticamente caso não seja encerrado."
+            ],
+            "id": "65414db356e09205d7e79ef4"
+        }
+    ],
+    "pageable": {
+        "pageNumber": 0,
+        "pageSize": 10,
+        "sort": {
+            "empty": false,
+            "sorted": true,
+            "unsorted": false
+        },
+        "offset": 0,
+        "paged": true,
+        "unpaged": false
+    },
+    "last": true,
+    "totalPages": 1,
+    "totalElements": 1,
+    "size": 10,
+    "number": 0,
+    "sort": {
+        "empty": false,
+        "sorted": true,
+        "unsorted": false
+    },
+    "first": true,
+    "numberOfElements": 1,
+    "empty": false
+}
+
+
+```
+
 # 🥼 Testes e CI/CD
 
 Há testes de integração para os controllers de modo a confirmar os principais comportamentos.
@@ -330,6 +389,7 @@ Interrompe-se o contêiner por meio do comando:
 * Em https://docs.github.com/en/actions/learn-github-actions/variables, visualizamos como informar variáveis de ambiente para serem usadas em execuções de testes no `Github Actions`;
 * Implementação de métrica de cobertura de código pelos testes, com habilitação do *github-actions bot* para gerar *badge*;
 * Em https://spring.io/blog/2021/11/29/spring-data-mongodb-relation-modelling, visualizamos como implementar o relacionamento modelado entre condutores e veículos;
+* Utilização de estratégia de paginação (interface [Pageable](https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/domain/Pageable.html)) para recuperação da consulta mais "pesada" da aplicação - isto é, a consulta do histórico de usos de estacionamento pelos condutores; 
 * Incluímos `Dockerfile` e `docker-compose.yml` para disponibilizar imagem de modo a facilitar explorações manuais que se deseje fazer da aplicação.
 
 ## ⚠️ Pontos de atenção
