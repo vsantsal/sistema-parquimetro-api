@@ -40,4 +40,17 @@ class VeiculoTest {
         assertNotEquals(veiculo.getAtualizadoEm(), veiculo.getCriadoEm());
     }
 
+    @DisplayName("Testa veículos com mesma placa são iguais")
+    @Test
+    public void testCenario3(){
+        // Arrange
+        Veiculo outroVeiculo = new Veiculo(placa);
+
+        // Act
+        boolean saoIguais = outroVeiculo.equals(veiculo);
+
+        // Assert
+        assertTrue(saoIguais);
+    }
+
 }

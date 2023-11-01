@@ -3,6 +3,7 @@ package com.fiap.parquimetroapi.controller;
 import com.fiap.parquimetroapi.dto.CondutorDTO;
 import com.fiap.parquimetroapi.model.*;
 import com.fiap.parquimetroapi.repository.CondutorRepository;
+import com.fiap.parquimetroapi.repository.UsoEstacionamentoRepository;
 import com.fiap.parquimetroapi.repository.VeiculoRepository;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
@@ -38,6 +39,8 @@ class UsoEstacionamentoControllerTest {
     private final String RAIZ_ENDPOINT = "/estacionamentos";
     private final String SUFIXO_ENDPOINT_INICIO_REGISTRO = "/usar";
 
+    private final String SUFIXO_ENDPOINT_PAGAR = "/pagar";
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -48,6 +51,9 @@ class UsoEstacionamentoControllerTest {
 
     @Autowired
     private VeiculoRepository veiculoRepository;
+
+    @Autowired
+    private UsoEstacionamentoRepository usoRepository;
 
     @BeforeEach
     public void  setUp(){
@@ -303,6 +309,124 @@ class UsoEstacionamentoControllerTest {
                 .andExpect(jsonPath("$[0].mensagem",
                         Matchers.is("Formato deve ser 'HH:MM:SS'")))
 
+        ;
+
+    }
+
+    @DisplayName("Testa pagamento para uso fixo")
+    @Test
+    public void testCenario9() throws Exception {
+        // Arrange
+        condutor.setFormaPagamento(FormaPagamento.PIX);
+        veiculoRepository.save(veiculo);
+        condutor.associa(veiculo);
+        condutorRepository.save(condutor);
+        this.mockMvc.perform(
+                        post(RAIZ_ENDPOINT + SUFIXO_ENDPOINT_INICIO_REGISTRO)
+                                .with(user(condutor.getUsuario()))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        "{\"placaVeiculo\": \"" + veiculo.getPlaca() +"\" ," +
+                                                "\"cnpjEstacionamento\": \"" + CNPJ_ESTACIONAMENTO +"\" ," +
+                                                "\"duracao\": \"02:00:00\" ," +
+                                                "\"tipoTempoEstacionado\": \"FIXO\" ," +
+                                                "\"inicio\": \"" + LocalDateTime.now().minusHours(1) +"\"}"
+                                )
+                );
+        var uso = usoRepository.findAll().stream().findFirst().get();
+
+        // Act
+        this.mockMvc.perform(
+                        post(RAIZ_ENDPOINT + SUFIXO_ENDPOINT_PAGAR + "/" + uso.getId())
+                                .with(user(condutor.getUsuario()))
+                )
+
+                // Assert
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.cnpjEstacionamento",
+                        Matchers.is(CNPJ_ESTACIONAMENTO)))
+                .andExpect(jsonPath("$.total",
+                        Matchers.is(19.98)))
+
+        ;
+
+    }
+
+    @DisplayName("Testa pagamento para uso variável")
+    @Test
+    public void testCenario10() throws Exception {
+        // Arrange
+        condutor.setFormaPagamento(FormaPagamento.DEBITO);
+        veiculoRepository.save(veiculo);
+        condutor.associa(veiculo);
+        condutorRepository.save(condutor);
+        this.mockMvc.perform(
+                post(RAIZ_ENDPOINT + SUFIXO_ENDPOINT_INICIO_REGISTRO)
+                        .with(user(condutor.getUsuario()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                                "{\"placaVeiculo\": \"" + veiculo.getPlaca() +"\" ," +
+                                        "\"cnpjEstacionamento\": \"" + CNPJ_ESTACIONAMENTO +"\" ," +
+                                        "\"tipoTempoEstacionado\": \"VARIAVEL\" ," +
+                                        "\"inicio\": \"" + LocalDateTime.now().minusMinutes(121) +"\"}"
+                        )
+        );
+        var uso = usoRepository.findAll().stream().findFirst().get();
+
+        // Act
+        this.mockMvc.perform(
+                        post(RAIZ_ENDPOINT + SUFIXO_ENDPOINT_PAGAR + "/" + uso.getId())
+                                .with(user(condutor.getUsuario()))
+                )
+
+                // Assert
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.cnpjEstacionamento",
+                        Matchers.is(CNPJ_ESTACIONAMENTO)))
+                .andExpect(jsonPath("$.total",
+                        Matchers.is(29.97)))
+
+        ;
+
+    }
+
+
+    @DisplayName("Testa não é possível pagar pela segunda vez")
+    @Test
+    public void testCenario11() throws Exception {
+        // Arrange
+        condutor.setFormaPagamento(FormaPagamento.DEBITO);
+        veiculoRepository.save(veiculo);
+        condutor.associa(veiculo);
+        condutorRepository.save(condutor);
+        this.mockMvc.perform(
+                post(RAIZ_ENDPOINT + SUFIXO_ENDPOINT_INICIO_REGISTRO)
+                        .with(user(condutor.getUsuario()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                                "{\"placaVeiculo\": \"" + veiculo.getPlaca() +"\" ," +
+                                        "\"cnpjEstacionamento\": \"" + CNPJ_ESTACIONAMENTO +"\" ," +
+                                        "\"tipoTempoEstacionado\": \"VARIAVEL\" ," +
+                                        "\"inicio\": \"" + LocalDateTime.now().minusMinutes(121) +"\"}"
+                        )
+        );
+        var uso = usoRepository.findAll().stream().findFirst().get();
+
+        this.mockMvc.perform(
+                post(RAIZ_ENDPOINT + SUFIXO_ENDPOINT_PAGAR + "/" + uso.getId())
+                        .with(user(condutor.getUsuario()))
+        );
+
+        // Act
+        this.mockMvc.perform(
+                        post(RAIZ_ENDPOINT + SUFIXO_ENDPOINT_PAGAR + "/" + uso.getId())
+                                .with(user(condutor.getUsuario()))
+                )
+
+                // Assert
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.mensagem",
+                        Matchers.is("Uso já pago anteriormente")))
         ;
 
     }

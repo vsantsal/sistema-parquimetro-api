@@ -16,7 +16,6 @@ Api para sistema de parquímetro
 
 
 ![example workflow](https://github.com/vsantsal/sistema-parquimetro-api/actions/workflows/maven.yml/badge.svg)
-![Coverage](.github/badges/jacoco.svg)
 
 Sistema de parquímetro para atender a demanda de estacionamento crescente de cidade turística.
 
@@ -57,6 +56,8 @@ Não pretendemos sobrecarregar os leitores com uma especificação rígida e pes
 **Iniciar período de estacionamento**: um condutor com forma de pagamento registrada pode iniciar o registro de tempo no sistema, informando veículo a estacionar e estacionamento, além de escolher entre tempo fixo (com duração desejada) ou por hora.
 
 **Controlar Tempo Estacionado** \ **Alertar Tempo Estacionado**: esses casos de uso são percebidos pelos condutores ao consultarem o endpoint adequado da API, que retornará o tempo decorrido e eventuais alertas emitidos. Para horários fixos, o sistema emite alerta faltando 10 minutos para expiração. Para horários variáveis, o sistema emite alerta (no mesmo marco anterior, considerando como fim uma hora após o início do registro) informando que estenderá o estacionamento por mais uma hora caso não seja encerrado o período.
+
+**Pagar Estacionamento** \ **Emitir Recibo**: um condutor encerra o período e paga o valor devido, implicando emissão de recibo com informações de tempo estacionado, tarifa aplicada e valor total pago. Para tempos fixos, o valor total é cobrado independente do tempo utilizado, ao passo que para períodos variáveis a cobrança se dá por hora completa.
 
 # 📖 Funcionalidades
 
@@ -360,6 +361,36 @@ O retorno paginado acontece conforme exemplo abaixo:
 }
 
 
+```
+
+## Controlar Tempo Estacionado \ Alertar Tempo Estacionado
+
+Os dois casos de uso são realizados pelos condutores através do método POST no *endpoint* `/estacionamentos/pagar`, com passagem de `id`.
+
+A resposta da requisição válida contém dados suficientes para a confecção do recibo por outro ponto da aplicação.
+
+```json
+{
+    "placaVeiculo": "ABC1234",
+    "cnpjEstacionamento": "71146289000108",
+    "tipoTempoEstacionado": "VARIAVEL",
+    "inicio": "2023-10-31T23:00:00",
+    "duracaoDecorrida": "PT16M3.146825428S",
+    "duracaoLimite": "PT1H",
+    "fim": "2023-10-31T23:16:03.146825428",
+    "valorHora": 9.99,
+    "total": 9.99,
+    "alertas": [],
+    "id": "6541b4d13c4be65a6e560fd7"
+}
+```
+
+A tentativa de pagar uma segunda vez o mesmo uso implica em erro na aplicação.
+
+```json
+{
+    "mensagem": "Uso já pago anteriormente"
+}
 ```
 
 # 🥼 Testes e CI/CD
