@@ -389,6 +389,7 @@ Interrompe-se o contêiner por meio do comando:
 * Em https://docs.github.com/en/actions/learn-github-actions/variables, visualizamos como informar variáveis de ambiente para serem usadas em execuções de testes no `Github Actions`;
 * Implementação de métrica de cobertura de código pelos testes, com habilitação do *github-actions bot* para gerar *badge*;
 * Em https://spring.io/blog/2021/11/29/spring-data-mongodb-relation-modelling, visualizamos como implementar o relacionamento modelado entre condutores e veículos;
+* Utilização de estratégia de paginação (interface [Pageable](https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/domain/Pageable.html)) para recuperação da consulta mais "pesada" da aplicação - isto é, a consulta do histórico de usos de estacionamento pelos condutores; 
 * Incluímos `Dockerfile` e `docker-compose.yml` para disponibilizar imagem de modo a facilitar explorações manuais que se deseje fazer da aplicação.
 
 ## ⚠️ Pontos de atenção
