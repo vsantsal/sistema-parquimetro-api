@@ -16,6 +16,7 @@ Api para sistema de parquímetro
 
 
 ![example workflow](https://github.com/vsantsal/sistema-parquimetro-api/actions/workflows/maven.yml/badge.svg)
+![Coverage](.github/badges/jacoco.svg)
 
 Sistema de parquímetro para atender a demanda de estacionamento crescente de cidade turística.
 
