@@ -64,6 +64,7 @@ public class UsoEstacionamento {
                             new BigDecimal(this.duracaoEfetiva.toMinutes()).divide(new BigDecimal("60"), RoundingMode.CEILING))
                     );
         }
+        this.setPago(true);
     }
 
     public void monitora(LocalDateTime dataHora){

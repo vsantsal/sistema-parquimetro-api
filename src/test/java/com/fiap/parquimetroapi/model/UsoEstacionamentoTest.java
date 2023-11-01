@@ -167,6 +167,7 @@ class UsoEstacionamentoTest {
                 estacionamentoDefault.getValorHora(),
                 usoEstacionamento.getValorDevido()
         );
+        assertTrue(usoEstacionamento.isPago());
 
 
     }
@@ -187,7 +188,7 @@ class UsoEstacionamentoTest {
                 estacionamentoDefault.getValorHora(),
                 usoEstacionamento.getValorDevido()
         );
-
+        assertTrue(usoEstacionamento.isPago());
 
     }
 
@@ -208,7 +209,7 @@ class UsoEstacionamentoTest {
                 new BigDecimal("25.0"),
                 usoEstacionamento.getValorDevido()
         );
-
+        assertTrue(usoEstacionamento.isPago());
 
     }
 
