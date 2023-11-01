@@ -364,6 +364,36 @@ O retorno paginado acontece conforme exemplo abaixo:
 
 ```
 
+## Controlar Tempo Estacionado \ Alertar Tempo Estacionado
+
+Os dois casos de uso são realizados pelos condutores através do método POST no *endpoint* `/estacionamentos/pagar`, com passagem de `id`.
+
+A resposta da requisição válida contém dados suficientes para a confecção do recibo por outro ponto da aplicação.
+
+```json
+{
+    "placaVeiculo": "ABC1234",
+    "cnpjEstacionamento": "71146289000108",
+    "tipoTempoEstacionado": "VARIAVEL",
+    "inicio": "2023-10-31T23:00:00",
+    "duracaoDecorrida": "PT16M3.146825428S",
+    "duracaoLimite": "PT1H",
+    "fim": "2023-10-31T23:16:03.146825428",
+    "valorHora": 9.99,
+    "total": 9.99,
+    "alertas": [],
+    "id": "6541b4d13c4be65a6e560fd7"
+}
+```
+
+A tentativa de pagar uma segunda vez o mesmo uso implica em erro na aplicação.
+
+```json
+{
+    "mensagem": "Uso já pago anteriormente"
+}
+```
+
 # 🥼 Testes e CI/CD
 
 Há testes de integração para os controllers de modo a confirmar os principais comportamentos.

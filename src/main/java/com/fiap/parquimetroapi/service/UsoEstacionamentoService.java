@@ -4,6 +4,7 @@ import com.fiap.parquimetroapi.dto.UsoComControleTempoDTO;
 import com.fiap.parquimetroapi.dto.UsoEstacionamentoDTO;
 import com.fiap.parquimetroapi.exception.FormaPagamentoAusenteException;
 import com.fiap.parquimetroapi.exception.TipoTempoEstacionadoInvalido;
+import com.fiap.parquimetroapi.exception.UsoEstacionamentoPagoException;
 import com.fiap.parquimetroapi.exception.VeiculoInexistenteException;
 import com.fiap.parquimetroapi.model.Estacionamento;
 import com.fiap.parquimetroapi.model.TipoTempoEstacionado;
@@ -145,8 +146,23 @@ public class UsoEstacionamentoService {
     }
 
     public UsoComControleTempoDTO pagar(String id) {
+        // Mensagem de erro
+        String mensagem = "Não foi possível identificar o uso com id + '" + id + "'";
         // Obtém condutor logado
         var condutorLogado = condutorService.obterCondutorLogado();
-        return null;
+        var uso = usoEstacionamentoRepository.findById(id);
+        if (uso.isEmpty()) {
+            throw new DataRetrievalFailureException(mensagem);
+        }
+        var usoPresente = uso.get();
+        if (!usoPresente.getCondutor().getId().equals(condutorLogado.getId())){
+            throw new DataRetrievalFailureException(mensagem);
+        }
+        if (usoPresente.isPago()) {
+            throw new UsoEstacionamentoPagoException("Uso já pago anteriormente");
+        }
+        usoPresente.encerra(LocalDateTime.now());
+        usoEstacionamentoRepository.save(usoPresente);
+        return new UsoComControleTempoDTO(usoPresente);
     }
 }
