@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -46,7 +47,54 @@ public class UsoEstacionamento {
     @Transient
     private Long SEGUNDOS_FALTANTES_PARA_ALERTA = 600L;
 
+    public void encerra(LocalDateTime dataHora){
+        acaoDefaultMonitoraEncerra(dataHora);
+
+        // calcula valor devido
+        this.setFim(dataHora);
+        if (tipoTempoEstacionado.equals(TipoTempoEstacionado.FIXO)) {
+            this.setValorDevido(
+                    this.estacionamento.getValorHora().multiply(
+                            new BigDecimal(this.duracaoEsperada.toMinutes()).divide(new BigDecimal("60"))
+                    )
+            );
+        } else {
+            this.setValorDevido(
+                    this.estacionamento.getValorHora().multiply(
+                            new BigDecimal(this.duracaoEfetiva.toMinutes()).divide(new BigDecimal("60"), RoundingMode.CEILING))
+                    );
+        }
+    }
+
     public void monitora(LocalDateTime dataHora){
+        acaoDefaultMonitoraEncerra(dataHora);
+
+        // Encerra se FIXO e tempo decorrido igual ou maior que esperado
+        if (tipoTempoEstacionado.equals(TipoTempoEstacionado.FIXO) &&
+                duracaoEfetiva.getSeconds() >= duracaoEsperada.getSeconds()){
+            this.setFim(this.getInicio().plus(duracaoEsperada));
+            this.setValorDevido(
+                    this.estacionamento.getValorHora().multiply(
+                            new BigDecimal(this.duracaoEsperada.toHours())
+                    )
+            );
+        }
+
+        // Amplia se VARIAVEL e tempo decorrido igual ou maior que esperado
+        if (tipoTempoEstacionado.equals(TipoTempoEstacionado.VARIAVEL) &&
+                duracaoEfetiva.getSeconds() >= duracaoEsperada.getSeconds()) {
+            this.setDuracaoEsperada(this.duracaoEsperada.plusHours(1));
+        }
+
+    }
+
+    private void ajustaDuracao(){
+        if (tipoTempoEstacionado.equals(TipoTempoEstacionado.VARIAVEL)) {
+            duracaoEsperada = Duration.ofHours(1L);
+        }
+    }
+
+    private void acaoDefaultMonitoraEncerra(LocalDateTime dataHora){
         this.ajustaDuracao();
         // lida com alertas
         Duration tempoDecorrido = Duration.between(
@@ -63,25 +111,6 @@ public class UsoEstacionamento {
 
         // Atualiza dados
         this.setDuracaoEfetiva(tempoDecorrido);
-
-        // Encerra se FIXO e tempo decorrido igual ou maior que esperado
-        if (tipoTempoEstacionado.equals(TipoTempoEstacionado.FIXO) &&
-                tempoDecorrido.getSeconds() >= duracaoEsperada.getSeconds()){
-            this.setFim(this.getInicio().plus(duracaoEsperada));
-        }
-
-        // Amplia se VARIAVEL e tempo decorrido igual ou maior que esperado
-        if (tipoTempoEstacionado.equals(TipoTempoEstacionado.VARIAVEL) &&
-                tempoDecorrido.getSeconds() >= duracaoEsperada.getSeconds()) {
-            this.setDuracaoEsperada(this.duracaoEsperada.plusHours(1));
-        }
-
-    }
-
-    private void ajustaDuracao(){
-        if (tipoTempoEstacionado.equals(TipoTempoEstacionado.VARIAVEL)) {
-            duracaoEsperada = Duration.ofHours(1L);
-        }
     }
 
 }

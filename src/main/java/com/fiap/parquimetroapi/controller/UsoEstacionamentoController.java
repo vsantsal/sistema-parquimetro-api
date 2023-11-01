@@ -49,4 +49,12 @@ public class UsoEstacionamentoController {
         Page<UsoComControleTempoDTO> pagina = usoEstacionamentoService.listar(paginacao);
         return ResponseEntity.ok(pagina);
     }
+
+    @PostMapping("/pagar/{id}")
+    public ResponseEntity<UsoComControleTempoDTO> pagar(
+            @PathVariable String id
+    ){
+        var dtoSalvo = usoEstacionamentoService.pagar(id);
+        return ResponseEntity.ok(dtoSalvo);
+    }
 }

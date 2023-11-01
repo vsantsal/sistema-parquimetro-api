@@ -148,4 +148,68 @@ class UsoEstacionamentoTest {
 
     }
 
+    @DisplayName("Teste encerra uso para horário variável antes de completar primeira deve cobrar cheia")
+    @Test
+    public void testCenario7() {
+        // Arrange
+        usoEstacionamento.setTipoTempoEstacionado(TipoTempoEstacionado.VARIAVEL);
+        LocalDateTime dataHoraFaltando10Minutos = LocalDateTime
+                .of(2023, 10, 1, 11, 20, 15);
+
+        // Act
+        usoEstacionamento.encerra(dataHoraFaltando10Minutos);
+
+        // Assert
+        assertEquals(
+                TipoTempoEstacionado.VARIAVEL.getAlerta(),
+                usoEstacionamento.getAlertasEmitidos().get(0));
+        assertEquals(
+                estacionamentoDefault.getValorHora(),
+                usoEstacionamento.getValorDevido()
+        );
+
+
+    }
+
+    @DisplayName("Teste encerra uso para horário variável antes de completar primeira deve cobrar cheia mesmo no início")
+    @Test
+    public void testCenario8() {
+        // Arrange
+        usoEstacionamento.setTipoTempoEstacionado(TipoTempoEstacionado.VARIAVEL);
+        LocalDateTime dataHoraApos10Minutos = LocalDateTime
+                .of(2023, 10, 1, 10, 40, 15);
+
+        // Act
+        usoEstacionamento.encerra(dataHoraApos10Minutos);
+
+        // Assert
+        assertEquals(
+                estacionamentoDefault.getValorHora(),
+                usoEstacionamento.getValorDevido()
+        );
+
+
+    }
+
+    @DisplayName("Teste encerra uso para horário fixo cobra valor hora incedido sobre periodo todo")
+    @Test
+    public void testCenario9() {
+        // Arrange
+        usoEstacionamento.setTipoTempoEstacionado(TipoTempoEstacionado.FIXO);
+        usoEstacionamento.setDuracaoEsperada(Duration.ofMinutes(150));
+        LocalDateTime dataHora = LocalDateTime
+                .of(2023, 10, 1, 11, 20, 15);
+
+        // Act
+        usoEstacionamento.encerra(dataHora);
+
+        // Assert
+        assertEquals(
+                new BigDecimal("25.0"),
+                usoEstacionamento.getValorDevido()
+        );
+
+
+    }
+
 }

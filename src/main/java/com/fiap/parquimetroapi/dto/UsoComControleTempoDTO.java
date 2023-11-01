@@ -32,6 +32,8 @@ public record UsoComControleTempoDTO(
 
         LocalDateTime fim,
 
+        BigDecimal valorHora,
+
         BigDecimal total,
 
         List<String> alertas,
@@ -49,6 +51,7 @@ public record UsoComControleTempoDTO(
                 uso.getDuracaoEfetiva().toString(),
                 uso.getDuracaoEsperada().toString(),
                 uso.getFim(),
+                uso.getEstacionamento().getValorHora(),
                 uso.getValorDevido(),
                 uso.getAlertasEmitidos(),
                 uso.getId()

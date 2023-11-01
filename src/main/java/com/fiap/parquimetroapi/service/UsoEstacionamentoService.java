@@ -143,4 +143,10 @@ public class UsoEstacionamentoService {
                 .findAllByCondutor(condutorLogado, paginacao)
                 .map(UsoComControleTempoDTO::new);
     }
+
+    public UsoComControleTempoDTO pagar(String id) {
+        // Obtém condutor logado
+        var condutorLogado = condutorService.obterCondutorLogado();
+        return null;
+    }
 }
