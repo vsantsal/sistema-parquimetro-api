@@ -58,6 +58,8 @@ Não pretendemos sobrecarregar os leitores com uma especificação rígida e pes
 
 **Controlar Tempo Estacionado** \ **Alertar Tempo Estacionado**: esses casos de uso são percebidos pelos condutores ao consultarem o endpoint adequado da API, que retornará o tempo decorrido e eventuais alertas emitidos. Para horários fixos, o sistema emite alerta faltando 10 minutos para expiração. Para horários variáveis, o sistema emite alerta (no mesmo marco anterior, considerando como fim uma hora após o início do registro) informando que estenderá o estacionamento por mais uma hora caso não seja encerrado o período.
 
+**Pagar Estacionamento** \ **Emitir Recibo**: um condutor encerra o período e paga o valor devido, implicando emissão de recibo com informações de tempo estacionado, tarifa aplicada e valor total pago. Para tempos fixos, o valor total é cobrado independente do tempo utilizado, ao passo que para períodos variáveis a cobrança se dá por hora completa.
+
 # 📖 Funcionalidades
 
 Abaixo, descrevemos globalmente as funcionalidades implementadas.
