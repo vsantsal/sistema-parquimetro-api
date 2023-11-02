@@ -16,6 +16,7 @@ import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -42,6 +43,7 @@ public class UsoEstacionamentoService {
      * TODO: evoluir aplicação para que o cadastro de estacionamentos habilitados seja feito em outro
      *  endpoint e usuários com role específica
      * */
+    @Transactional
     public UsoComControleTempoDTO iniciarRegistro(UsoEstacionamentoDTO dto) {
         // Obtém condutor logado e veículo informado no dto
         var condutorLogado = condutorService.obterCondutorLogado();
@@ -113,6 +115,7 @@ public class UsoEstacionamentoService {
         return new UsoComControleTempoDTO(uso);
     }
 
+    @Transactional(readOnly = true)
     public UsoComControleTempoDTO detalhar(String id, LocalDateTime hora) {
         // Mensagem de erro
         String mensagem = "Não foi possível identificar o uso com id + '" + id + "'";
@@ -136,6 +139,7 @@ public class UsoEstacionamentoService {
 
     }
 
+    @Transactional(readOnly = true)
     public Page<UsoComControleTempoDTO> listar(Pageable paginacao) {
         // Obtém condutor logado
         var condutorLogado = condutorService.obterCondutorLogado();
@@ -145,6 +149,7 @@ public class UsoEstacionamentoService {
                 .map(UsoComControleTempoDTO::new);
     }
 
+    @Transactional
     public UsoComControleTempoDTO pagar(String id) {
         // Mensagem de erro
         String mensagem = "Não foi possível identificar o uso com id + '" + id + "'";

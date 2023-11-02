@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -24,6 +25,7 @@ public class RegistroCondutorService {
     @Autowired
     private CondutorRepository condutorRepository;
 
+    @Transactional
     public CondutorDTO registrar(RegistroCondutorDTO dto){
         // Se usuário já cadastrado, informa erro ao usuário
         if (condutorRepository.findFirstByLogin(dto.login()).isPresent()){
@@ -49,6 +51,7 @@ public class RegistroCondutorService {
 
     }
 
+    @Transactional
     public boolean autenticar(Usuario usuario){
         var condutorAAutenticar = condutorRepository.findFirstByLogin(usuario.getLogin());
         return condutorAAutenticar
