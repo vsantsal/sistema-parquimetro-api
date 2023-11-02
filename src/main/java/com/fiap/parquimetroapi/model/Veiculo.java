@@ -2,6 +2,7 @@ package com.fiap.parquimetroapi.model;
 
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
@@ -24,6 +25,9 @@ public class Veiculo {
     private LocalDateTime atualizadoEm;
 
     private boolean ativo;
+
+    @Version
+    private Long version;
 
     public Veiculo(Placa placa, Condutor condutor){
         this.placa = placa;

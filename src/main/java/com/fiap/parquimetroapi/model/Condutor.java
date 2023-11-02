@@ -3,6 +3,7 @@ package com.fiap.parquimetroapi.model;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -25,6 +26,9 @@ public class Condutor {
 
     @DBRef
     private List<Veiculo> veiculos = new ArrayList<>();
+
+    @Version
+    private Long version;
 
     public void associa(Veiculo veiculo){
         veiculos.add(veiculo);

@@ -10,6 +10,7 @@ import com.fiap.parquimetroapi.repository.VeiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,11 +27,13 @@ public class CondutorService {
     @Autowired
     private VeiculoRepository veiculoRepository;
 
+    @Transactional(readOnly = true)
     public CondutorDTO detalhar(String id) {
         var condutorDeUsuario = validaUsuarioLogadoERetorna(id);
         return new CondutorDTO(condutorDeUsuario);
     }
 
+    @Transactional
     public void descadastra(String id) {
         var condutorDeUsuario = validaUsuarioLogadoERetorna(id);
         var usuario = condutorDeUsuario.getUsuario();
@@ -40,6 +43,7 @@ public class CondutorService {
         condutorRepository.save(condutorDeUsuario);
     }
 
+    @Transactional
     public CondutorDTO atualizar(String id, CondutorDTO dto) {
         var condutorDeUsuario = validaUsuarioLogadoERetorna(id);
         condutorDeUsuario.setNome(dto.nome());
@@ -51,6 +55,7 @@ public class CondutorService {
 
     }
 
+    @Transactional
     public FormaPagamentoDTO registrarFormaPagamento(FormaPagamentoDTO dto) {
         Condutor condutor = this.obterCondutorLogado();
         var formaPagamento = dto.toModel();
@@ -63,6 +68,7 @@ public class CondutorService {
 
     }
 
+    @Transactional(readOnly = true)
     public FormaPagamentoDTO consultarFormaPagamento() {
         Condutor condutor = this.obterCondutorLogado();
         try {
@@ -72,6 +78,7 @@ public class CondutorService {
         }
     }
 
+    @Transactional(readOnly = true)
     public Condutor obterCondutorLogado(){
         var usuarioLogado = RegistroCondutorService.getUsuarioLogado();
         Optional<Condutor> possivelCondutor = condutorRepository
@@ -85,6 +92,7 @@ public class CondutorService {
 
     }
 
+
     private Condutor validaUsuarioLogadoERetorna(String id){
         var condutorDeUsuario = this.obterCondutorLogado();
         if (!Objects.equals(condutorDeUsuario.getId(), id)){
@@ -93,6 +101,7 @@ public class CondutorService {
         return condutorDeUsuario;
     }
 
+    @Transactional
     public VeiculoDTO registrarVeiculo(VeiculoDTO dto) {
         //
         var condutorDeUsuario = this.obterCondutorLogado();
@@ -110,6 +119,7 @@ public class CondutorService {
         return new VeiculoDTO(veiculoSalvo);
     }
 
+    @Transactional
     public void desassociaVeiculo(String id) {
         var condutorDeUsuario = this.obterCondutorLogado();
         var veiculoPesquisado = veiculoRepository.findById(id);
@@ -124,6 +134,7 @@ public class CondutorService {
                 "Não foi possível identificar veículo com o id '" + id + "'");
     }
 
+    @Transactional(readOnly = true)
     public List<VeiculoDTO> listarVeiculos() {
         var condutorDeUsuario = this.obterCondutorLogado();
         var veiculos = veiculoRepository
@@ -139,6 +150,7 @@ public class CondutorService {
         return veiculos;
     }
 
+    @Transactional(readOnly = true)
     public VeiculoDTO detalharVeiculo(String id) {
         var condutorDeUsuario = this.obterCondutorLogado();
         var veiculoObtido = veiculoRepository
