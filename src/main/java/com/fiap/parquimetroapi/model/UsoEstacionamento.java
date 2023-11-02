@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
@@ -43,6 +44,9 @@ public class UsoEstacionamento {
     private Duration duracaoEsperada;
 
     private List<String> alertasEmitidos;
+
+    @Version
+    private Long version;
 
     @Transient
     private Long SEGUNDOS_FALTANTES_PARA_ALERTA = 600L;
