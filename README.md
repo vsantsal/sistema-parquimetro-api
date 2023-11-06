@@ -1,6 +1,24 @@
 Api para sistema de parquímetro
 ========================
 
+<!-- TOC -->
+* [Api para sistema de parquímetro](#api-para-sistema-de-parquímetro)
+* [👓 Introdução](#-introdução)
+* [🔬 Escopo](#-escopo)
+* [📖 Funcionalidades](#-funcionalidades)
+  * [Autenticar Usuário](#autenticar-usuário)
+  * [Manter Condutor](#manter-condutor)
+  * [Manter Forma de Pagamento](#manter-forma-de-pagamento)
+  * [Manter Veículo](#manter-veículo)
+  * [Iniciar período de estacionamento](#iniciar-período-de-estacionamento)
+  * [Controlar Tempo Estacionado \ Alertar Tempo Estacionado](#controlar-tempo-estacionado--alertar-tempo-estacionado)
+  * [Controlar Tempo Estacionado \ Alertar Tempo Estacionado](#controlar-tempo-estacionado--alertar-tempo-estacionado-1)
+* [🥼 Testes e CI/CD](#-testes-e-cicd)
+* [🐳 Contêineres](#-contêineres)
+* [🗓️ Resumo Desenvolvimento](#-resumo-desenvolvimento)
+  * [⚠️ Pontos de atenção](#-pontos-de-atenção)
+<!-- TOC -->
+
 # 👓 Introdução
 
 ![status_desenvolvimento](https://img.shields.io/static/v1?label=Status&message=Em%20Desenvolvimento&color=yellow&style=for-the-badge)
